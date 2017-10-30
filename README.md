@@ -8,26 +8,23 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+* [Docker](https://www.docker.com/)
+
+### How to run
+
+This project is fully Dockerized so, the unique thing you have to do is build and run the containers as follows:
+
+Open terminal and type:
 
 ```
-Give examples
+docker build -t bilbot .
+docker run -p 80:80 bilbot
 ```
 
-### Installing
-
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
+For mount the filesystem and be able to edit files while the image is running:
 
 ```
-Give the example
-```
-
-And repeat
-
-```
-until finished
+docker run -p 80:80 -v /path/to/your/local/src:/var/www/html/ bilbot 
 ```
 
 End with an example of getting some data out of the system or using it for a little demo
