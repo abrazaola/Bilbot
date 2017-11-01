@@ -3,4 +3,4 @@ services:
   bilbot:
     build: .
     ports:
-     - "80:80"
+     - "${CAP_DOCKER_COMPOSE_PORT}:80"
