@@ -1,0 +1,8 @@
+version: '3'
+services:
+  bilbot:
+    build: .
+    ports:
+     - "80:80"
+    environment:
+     - RAILS_ENV=staging
