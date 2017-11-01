@@ -1,10 +1,11 @@
 # Load DSL and set up stages
 require "capistrano/setup"
 
-require 'capistrano/composer'
 
 # Include default deployment tasks
-require "capistrano/deploy"
+require 'capistrano/deploy'
+require 'capistrano/composer'
+require 'capistrano/docker/compose'
 
 # Load the SCM plugin appropriate to your project:
 #
