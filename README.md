@@ -9,49 +9,47 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 * [Docker](https://www.docker.com/)
+* [Docker compose](https://docs.docker.com/compose/)
+* [Capistrano](http://capistranorb.com/)
 
 ### How to run
 
-This project is fully Dockerized so, the unique thing you have to do is build and run the containers as follows:
+This project is fully Dockerized and orchestrated with Docker Compose.
 
-Open terminal and type:
-
-```
-docker build -t bilbot .
-docker run -p 80:80 bilbot
-```
-
-For mount the filesystem and be able to edit files while the image is running:
+Build the images:
 
 ```
-docker run -p 80:80 -v /path/to/your/local/src:/var/www/html/ bilbot 
+docker-compose build
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
+Run the servers:
 ```
-Give an example
+docker-compose up
 ```
 
-### And coding style tests
-
-Explain what these tests test and why
-
+The web server is constantly querying the Telegram API for new messages sent to Bilbot, for stopping the containers:
 ```
-Give an example
+docker-compose stop
 ```
+
+To remove the built image for starting from scratch:
+```
+docker-compose stop
+docker-compose rm
+```
+
+All the received messages are stored in a MySQL Database which can be accessed in localhost.
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+The deployment process is orchestrated by Capistrano, a tool written in ruby to encapsulate each environment 
+configuration specifications.
+
+For deploying a new version in dev:
+
+```
+cap dev deploy
+```
 
 ## Built With
 
