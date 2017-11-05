@@ -98,3 +98,5 @@ Temporary Items
 
 /vendor/
 composer.phar
+/src/php/www/Upload/
+/src/php/www/Download/

@@ -23,7 +23,7 @@ $admin_users = [
 
 // Define all paths for your custom commands in this array (leave as empty array if not used)
 $commands_paths = [
-//    __DIR__ . '/Commands/',
+    __DIR__ . '/Commands/',
 ];
 
 // Enter your MySQL database credentials
@@ -48,16 +48,16 @@ try {
     $telegram->enableMySql($mysql_credentials);
 
     // Logging (Error, Debug and Raw Updates)
-    //Longman\TelegramBot\TelegramLog::initErrorLog(__DIR__ . "/{$bot_username}_error.log");
-    //Longman\TelegramBot\TelegramLog::initDebugLog(__DIR__ . "/{$bot_username}_debug.log");
+    Longman\TelegramBot\TelegramLog::initErrorLog(__DIR__ . "/{$bot_username}_error.log");
+    Longman\TelegramBot\TelegramLog::initDebugLog(__DIR__ . "/{$bot_username}_debug.log");
     //Longman\TelegramBot\TelegramLog::initUpdateLog(__DIR__ . "/{$bot_username}_update.log");
 
     // If you are using a custom Monolog instance for logging, use this instead of the above
     //Longman\TelegramBot\TelegramLog::initialize($your_external_monolog_instance);
 
     // Set custom Upload and Download paths
-    //$telegram->setDownloadPath(__DIR__ . '/Download');
-    //$telegram->setUploadPath(__DIR__ . '/Upload');
+    $telegram->setDownloadPath(__DIR__ . '/Download');
+    $telegram->setUploadPath(__DIR__ . '/Upload');
 
     // Here you can set some command specific parameters
     // e.g. Google geocode/timezone api key for /date command
