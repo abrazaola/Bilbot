@@ -11,6 +11,7 @@
 
 // Load composer
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/Constants.php';
 
 // Add you bot's API key and name
 $bot_api_key = '461265581:AAEGFfw4nQGquZWFcncGDPsiuJfTF3HbLvU';
