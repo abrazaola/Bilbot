@@ -1,15 +1,15 @@
 version: '3'
 services:
-  php:
-    build: ./src/php
+  bilbot-php:
+    build: ./src/bilbot-php
     ports:
      - "80:80"
     environment:
      - RAILS_ENV=staging
     volumes:
-     - ./src/php/www:/var/www/html
+     - ./src/bilbot-php/www:/var/www/html
      - ./vendor:/var/www/html/vendor
-  database:
+  bilbot-mysql:
     image: mysql
     ports:
      - "3306:3306"
@@ -20,4 +20,4 @@ services:
       MYSQL_USER: puppy
       MYSQL_PASSWORD: 1234
     volumes:
-      - ./src/mysql/structure.sql:/docker-entrypoint-initdb.d/structure.sql
+      - ./src/bilbot-mysql/structure.sql:/docker-entrypoint-initdb.d/structure.sql

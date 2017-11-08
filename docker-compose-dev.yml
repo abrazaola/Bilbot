@@ -7,7 +7,7 @@ services:
     environment:
      - RAILS_ENV=staging
     volumes:
-     - ./src/php/www:/var/www/html
+     - ./src/bilbot-php/www:/var/www/html
      - ./vendor:/var/www/html/vendor
   database:
     image: mysql
@@ -18,4 +18,4 @@ services:
       MYSQL_USER: puppy
       MYSQL_PASSWORD: 1234
     volumes:
-      - ./src/mysql/structure.sql:/docker-entrypoint-initdb.d/structure.sql
+      - ./src/bilbot-mysql/structure.sql:/docker-entrypoint-initdb.d/structure.sql
