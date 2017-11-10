@@ -9,6 +9,8 @@ services:
     volumes:
      - ./src/bilbot-php/www:/var/www/html
      - ./vendor:/var/www/html/vendor
+    links:
+      - bilbot-mysql
   bilbot-mysql:
     image: mysql
     ports:

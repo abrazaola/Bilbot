@@ -14,8 +14,8 @@ class Constants
     const TELEGRAM_COMMANDS_PATH = '/Commands/';
     const TELEGRAM_UPLOADS_PATH = '';
     const TELEGRAM_DOWNLOADS_PATH = '';
-    const TELEGRAM_ERROR_LOGS_PATH = 'bilbot_errors.log';
-    const TELEGRAM_DEBUG_LOGS_PATH = 'bilbot_debug.log';
+    const TELEGRAM_ERROR_LOGS_PATH = '/logs/bilbot_errors.log';
+    const TELEGRAM_DEBUG_LOGS_PATH = '/logs/bilbot_debug.log';
 
     const MYSQL_HOST = 'bilbotpfm_bilbot-mysql_1';
     const MYSQL_USER = 'puppy';
