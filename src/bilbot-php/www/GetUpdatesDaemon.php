@@ -9,14 +9,19 @@ use Longman\TelegramBot\TelegramLog;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-class getUpdatesDaemon
+class GetUpdatesDaemon
 {
     private $telegram;
+    private $online = false;
 
     public function __construct()
     {
-        $this->initialize();
-        $this->startDaemon();
+        while (true) {
+            $this->initialize();
+            if ($this->online) {
+                $this->update();
+            }
+        }
     }
 
     private function initialize()
@@ -29,12 +34,20 @@ class getUpdatesDaemon
             $this->telegram->addCommandsPaths([Constants::TELEGRAM_COMMANDS_PATH]);
             $this->telegram->enableAdmins([]);
 
-            $this->telegram->enableMySql([
-                'host'     => Constants::MYSQL_HOST,
-                'user'     => Constants::MYSQL_USER,
-                'password' => Constants::MYSQL_PASSWORD,
-                'database' => Constants::MYSQL_DATABASE,
-            ]);
+            try {
+                $this->telegram->enableMySql([
+                    'host'     => Constants::MYSQL_HOST,
+                    'user'     => Constants::MYSQL_USER,
+                    'password' => Constants::MYSQL_PASSWORD,
+                    'database' => Constants::MYSQL_DATABASE,
+                ]);
+
+                $this->online = true;
+
+                echo 'STARTED - Bilbot online.';
+            } catch (\Exception $e) {
+                return;
+            }
 
             TelegramLog::initErrorLog(__DIR__ . Constants::TELEGRAM_ERROR_LOGS_PATH);
             TelegramLog::initDebugLog(__DIR__ . Constants::TELEGRAM_DEBUG_LOGS_PATH);
@@ -52,9 +65,8 @@ class getUpdatesDaemon
         }
     }
 
-    private function startDaemon()
+    private function update()
     {
-        while (true) {
             try {
                 $server_response = $this->telegram->handleGetUpdates();
 
@@ -71,6 +83,5 @@ class getUpdatesDaemon
             } catch (TelegramLogException $e) {
                 echo $e->getMessage();
             }
-        }
     }
 }
