@@ -17,9 +17,10 @@ class GetUpdatesDaemon
     public function __construct()
     {
         while (true) {
-            $this->initialize();
             if ($this->online) {
                 $this->update();
+            } else {
+                $this->initialize();
             }
         }
     }
@@ -43,8 +44,8 @@ class GetUpdatesDaemon
                 ]);
 
                 $this->online = true;
+                echo 'STARTED - Bilbot online.' . PHP_EOL;
 
-                echo 'STARTED - Bilbot online.';
             } catch (\Exception $e) {
                 return;
             }
