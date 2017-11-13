@@ -1,9 +1,9 @@
-version: '3'
+version: '2'
 services:
   bilbot-php:
     build: ./src/bilbot-php
-    ports:
-     - "80:80"
+    #ports:
+     #- "80:80"
     environment:
      - RAILS_ENV=staging
     volumes:
@@ -23,3 +23,28 @@ services:
       MYSQL_PASSWORD: 1234
     volumes:
       - ./src/bilbot-mysql/structure.sql:/docker-entrypoint-initdb.d/structure.sql
+  watson-php:
+    build: ./src/bilbot-watson
+    links:
+      - watson-db
+    volumes:
+      - ./src/bilbot-watson:/var/www/docker-symfony
+    environment:
+      XDEBUG_CONFIG: remote_host=192.168.99.1
+      PHP_IDE_CONFIG: serverName=docker-symfony
+  watson-nginx:
+    image: nginx:1.9.10
+    links:
+      - watson-php
+    volumes_from:
+      - watson-php
+    volumes:
+      - ./src/bilbot-watson/docker/vhost.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+  watson-db:
+    image: mongo:3.2.1
+    #volumes:
+      #- /mnt/sda1/var/lib/mongo-data:/data/db
+    ports:
+      - "27017:27017"
