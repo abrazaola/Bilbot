@@ -29,12 +29,12 @@ docker-compose up
 
 The web server is constantly querying the Telegram API for new messages sent to Bilbot, for stopping the containers:
 ```
-docker-compose stop
+docker-compose down
 ```
 
 To remove the built image for starting from scratch:
 ```
-docker-compose stop
+docker-compose down
 docker-compose rm
 ```
 
@@ -56,6 +56,7 @@ cap dev deploy
 * [PHP Telegram Bot](https://github.com/php-telegram-bot) - A Telegram bot framework in PHP
 * [IBM Watson](https://www.ibm.com/watson/) - AI engine
 * [WeLive](http://welive.eu/) - Datasets sources
+* [Symfony](https://symfony.com/) - Web Framework
 
 ## Versioning
 
