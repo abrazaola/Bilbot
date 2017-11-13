@@ -22,10 +22,51 @@ Build the images:
 docker-compose build
 ```
 
-Run the servers:
+Run the services:
 ```
-docker-compose up
+docker-compose up -d
 ```
+
+Prepare the environment:
+
+1. Log in to the `watson-php` container by running the following command:
+    ```
+    docker exec -it bilbotpfm_watson-php_1 bash
+    ```
+
+2. Install dependencies by running the following command:
+    ```
+    cd /var/www/docker-symfony && composer install -n
+    ```
+
+3. Change `/tmp` dir permissions:
+    ```
+    chown -R www-data:www-data /tmp
+    ```
+
+### Update your hosts
+
+#### Mac OS X
+
+1. Check Docker Machine IP address: `docker-machine ip dev`.
+
+2. Assuming it's 192.168.99.100, add the following line to your `/etc/hosts` file:
+    ```
+    192.168.99.100 bilbot-watson.dev
+    ```
+
+#### Linux
+
+TBA
+
+#### Windows
+
+1. Check Docker Machine IP address: `docker-machine ip dev`.
+
+2. Assuming it's 192.168.99.100, add the following line to your `%SystemRoot%\System32\drivers\etc\hosts` file:
+    ```
+    192.168.99.100 bilbot-watson.dev
+    ```
 
 The web server is constantly querying the Telegram API for new messages sent to Bilbot, for stopping the containers:
 ```
@@ -72,4 +113,6 @@ This project is licensed under the GPL v3 License - see the [LICENSE.md](LICENSE
 
 ## Acknowledgments
 
+* [docker-symfony](https://github.com/sskorc/docker-symfony) - Szymon Skórczyński
+* [Example Bot Telegram](https://github.com/php-telegram-bot/example-bot) - PHP Telegram Bot Developers
 * Coffe
