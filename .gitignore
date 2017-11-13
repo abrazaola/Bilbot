@@ -100,3 +100,8 @@ Temporary Items
 composer.phar
 /src/php/www/Upload/
 /src/php/www/Download/
+/src/bilbot-watson/app/bootstrap.php.cache
+/src/bilbot-watson/bin/
+/src/bilbot-watson/vendor/
+/src/bilbot-watson/web/bundles/
+/src/bilbot-watson/app/config/parameters.yml
