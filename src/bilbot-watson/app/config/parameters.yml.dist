@@ -4,3 +4,6 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    watson_api_endpoint: ~
+    watson_api_password: ~

@@ -6,3 +6,12 @@ api_test_name:
   defaults:
       _format: json
       _controller: AppBundle:REST/Test:execute
+
+understandme:
+  path: /understandme
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:understandMe
