@@ -11,6 +11,7 @@ services:
      - ./vendor:/var/www/html/vendor
     links:
       - bilbot-mysql
+      - watson-php
   bilbot-mysql:
     image: mysql
     ports:

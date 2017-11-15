@@ -2,6 +2,7 @@
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
+use Exception;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Request;
 
@@ -48,22 +49,15 @@ class UnderstandMeCommand extends UserCommand
             $text = 'Command usage: ' . $this->getUsage();
         }
 
-        $config = [
-            \Bilbot\Constants::WATSON_API_USERNAME,
-            \Bilbot\Constants::WATSON_API_PASSWORD
-        ];
-
-        $client = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::WATSON_API_ENDPOINT]);
-        $res = $client->get('analyze', ['auth' => $config, 'query' => [
-            'version' => '2017-02-27',
-            'text' => $text,
-            'features' => 'sentiment,keywords,concepts,entities',
-            'keywords.sentiment' => 'true'
-        ]]);
+        $client = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WATSON_API_ENDPOINT]);
+        $res = $client->get(
+            'understandme',
+            ['query' => ['text' => $text]]
+        );
 
         $data = [
             'chat_id' => $chat_id,
-            'text'    => $res->getBody(),
+            'text'    => json_decode($res->getBody()),
         ];
 
         return Request::sendMessage($data);

@@ -4,6 +4,6 @@ parameters:
 #    parameter_name: value
 
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    watson_api_consumer:
+        class: AppBundle\DependencyInjection\WatsonApiConsumer
+        arguments: ['%watson_api_username%', '%watson_api_password%', '%watson_api_endpoint%']
