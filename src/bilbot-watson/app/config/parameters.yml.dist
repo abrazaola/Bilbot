@@ -7,3 +7,4 @@ parameters:
 
     watson_api_endpoint: ~
     watson_api_password: ~
+    watson_api_username: ~

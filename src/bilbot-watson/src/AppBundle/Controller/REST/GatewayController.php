@@ -3,8 +3,8 @@
 namespace AppBundle\Controller\REST;
 
 
-use FOS\RestBundle\Controller\FOSRestController;
 use GuzzleHttp\Client;
+use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,18 +17,26 @@ class GatewayController extends FOSRestController
             return new JsonResponse(['error' => 'Empty text'], 300);
         }
 
-        $client = new Client(['base_uri' => $this->get('watson_api_endpoint')]);
+        $client = new Client(['base_uri' => $this->container->getParameter('watson_api_endpoint')]);
         $res = $client->get(
             'analyze',
-            ['auth' => [$this->get('watson_api_username'), $this->get('watson_api_username')],
-                'query' => [
-                    'version' => '2017-02-27',
-                    'text' => $text,
-                    'features' => 'sentiment,keywords,concepts,entities',
-                    'keywords.sentiment' => 'true'
-                ]
+            [
+                'auth' => [
+                $this->container->getParameter('watson_api_username'),
+                $this->container->getParameter('watson_api_password')
+            ],
+            'query' => [
+                'version' => '2017-02-27',
+                'text' => $text,
+                'features' => 'sentiment,keywords,concepts,entities',
+                'keywords.sentiment' => 'true'
+            ]
             ]);
 
-        return new JsonResponse($res->getBody(), 200);
+        $data = [
+            'text'    => $res->getBody()->getContents(),
+        ];
+
+        return new JsonResponse($data, 200);
     }
 }
