@@ -16,7 +16,7 @@ class GatewayController extends FOSRestController
             return new JsonResponse(['error' => 'Empty text'], 300);
         }
 
-        $res = $this->get('watson_api_consumer')->understandme($text);
+        $res = $this->get('watson_api_consumer')->query($text);
 
         $data = [
             'analysis'    => $res,

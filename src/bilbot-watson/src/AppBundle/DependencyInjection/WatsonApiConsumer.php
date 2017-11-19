@@ -22,7 +22,7 @@ class WatsonApiConsumer
         $this->client = new Client(['base_uri' => $endpoint]);
     }
 
-    public function understandme($text)
+    public function query($text)
     {
         try {
             $res = $this->client->get(
