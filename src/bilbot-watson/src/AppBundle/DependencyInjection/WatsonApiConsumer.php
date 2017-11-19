@@ -24,21 +24,25 @@ class WatsonApiConsumer
 
     public function understandme($text)
     {
-        $res = $this->client->get(
-            'analyze',
-            [
-                'auth' => [
-                    $this->username,
-                    $this->password
-                ],
-                'query' => [
-                    'version' => '2017-02-27',
-                    'text' => $text,
-                    'features' => 'sentiment,keywords,concepts,entities',
-                    'keywords.sentiment' => 'true'
-                ]
-            ]);
+        try {
+            $res = $this->client->get(
+                'analyze',
+                [
+                    'auth' => [
+                        $this->username,
+                        $this->password
+                    ],
+                    'query' => [
+                        'version' => '2017-02-27',
+                        'text' => $text,
+                        'features' => 'sentiment,keywords,concepts,entities',
+                        'keywords.sentiment' => 'true'
+                    ]
+                ])->getBody();
+        } catch (Exception $e) {
+            $res = json_encode(['error' => $e->getMessage()]);
+        }
 
-        return json_decode($res->getBody());
+        return json_decode($res);
     }
 }

@@ -49,15 +49,19 @@ class UnderstandMeCommand extends UserCommand
             $text = 'Command usage: ' . $this->getUsage();
         }
 
-        $client = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WATSON_API_ENDPOINT]);
-        $res = $client->get(
-            'understandme',
-            ['query' => ['text' => $text]]
-        );
+        try {
+            $client = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WATSON_API_ENDPOINT]);
+            $res = $client->get(
+                'understandme',
+                ['query' => ['text' => $text]]
+            )->getBody()->getContents();
+        } catch (Exception $e) {
+            $res = json_encode(['error' => $e->getMessage()]);
+        }
 
         $data = [
             'chat_id' => $chat_id,
-            'text'    => json_decode($res->getBody()),
+            'text'    => $res,
         ];
 
         return Request::sendMessage($data);
