@@ -7,11 +7,11 @@ api_test_name:
       _format: json
       _controller: AppBundle:REST/Test:execute
 
-understandme:
-  path: /understandme
+bilbaoclubs:
+  path: /bilbaoclubs
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:understandMe
+      _controller: AppBundle:REST/Gateway:bilbaoClubs

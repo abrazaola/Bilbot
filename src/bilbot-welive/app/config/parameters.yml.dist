@@ -5,6 +5,4 @@ parameters:
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
 
-    watson_api_endpoint: ~
-    watson_api_password: ~
-    watson_api_username: ~
+    welive_api_endpoint: https://dev.welive.eu/dev/api/ods/

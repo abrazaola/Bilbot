@@ -4,6 +4,6 @@ parameters:
 #    parameter_name: value
 
 services:
-    watson_api_consumer:
-        class: AppBundle\DependencyInjection\WatsonApiConsumer
-        arguments: ['%watson_api_username%', '%watson_api_password%', '%watson_api_endpoint%']
+    welive_api_consumer:
+        class: AppBundle\DependencyInjection\WeLiveApiConsumer
+        arguments: ['%welive_api_endpoint%']
