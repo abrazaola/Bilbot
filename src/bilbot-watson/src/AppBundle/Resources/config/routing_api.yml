@@ -15,3 +15,12 @@ understandme:
   defaults:
       _format: json
       _controller: AppBundle:REST/Gateway:understandMe
+
+agenda_analysis:
+  path: /agenda_analysis
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:agendaAnalysis
