@@ -19,7 +19,7 @@ class WeLiveApiConsumer
         return $this->endpoint . $dataset . '/resource/' . $resource . '/query?origin=ANY';
     }
 
-    public function query($dataset, $resource)
+    public function query($dataset, $resource, $query)
     {
         $client = new Client(
             ['base_uri' =>
@@ -34,7 +34,7 @@ class WeLiveApiConsumer
             [
                 'Content-Type' => 'Content-Type: text/plain',
                 'Accept' => 'application/json',
-                'body' => 'select * from results limit 10;'
+                'body' => $query
             ]);
 
         return json_decode($res->getBody());

@@ -7,11 +7,119 @@ api_test_name:
       _format: json
       _controller: AppBundle:REST/Test:execute
 
-bilbaoclubs:
-  path: /bilbaoclubs
+clubs:
+  path: /clubs
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:bilbaoClubs
+      _controller: AppBundle:REST/Gateway:clubs
+
+agenda:
+  path: /agenda
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:agenda
+
+restaurants:
+  path: /restaurants
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:restaurants
+
+bikes:
+  path: /bikes
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:bikes
+
+buses_per_route:
+  path: /buses_per_route
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:busesPerRoute
+
+bus_stops:
+  path: /bus_stops
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:busStops
+
+nightly_bus_routes:
+  path: /nightly_bus_routes
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:nightlyBusRoutes
+
+nightly_bus_routes:
+  path: /nightly_bus_routes
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:nightlyBusRoutes
+
+daily_bus_routes:
+  path: /daily_bus_routes
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:dailyBusRoutes
+
+tourist_offices:
+  path: /tourist_offices
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:touristOffices
+
+tourist_attractions:
+  path: /tourist_attractions
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:touristAttractions
+
+hotels:
+  path: /hotels
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:hotels
+
+portals:
+  path: /portals
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Gateway:portals
