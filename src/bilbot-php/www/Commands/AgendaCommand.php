@@ -13,6 +13,8 @@ use Longman\TelegramBot\Request;
  */
 class AgendaCommand extends UserCommand
 {
+    const RELEVANCE_THRESHOLD = 0.85;
+    const NEGATIVENESS_THRESHOLD = -0.9;
     /**
      * @var string
      */
@@ -44,25 +46,61 @@ class AgendaCommand extends UserCommand
         $message = $this->getMessage();
         $chat_id = $message->getChat()->getId();
         $text    = trim($message->getText(true));
+        $answer = '...';
 
         if ($text === '') {
-            $res = 'Uso del comando: ' . $this->getUsage();
+            $answer = 'Uso del comando: ' . $this->getUsage();
         } else {
             try {
                 $client = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WATSON_API_ENDPOINT]);
+
                 $res = $client->get(
                     'understandme',
                     ['query' => ['text' => $text]]
                 )->getBody()->getContents();
+
+                $res = json_decode($res, true);
+                var_dump($res);
+                if (
+                    $res['analysis']['sentiment']['document']['label'] == 'positive' ||
+                    $res['analysis']['sentiment']['document']['label'] == 'neutral'
+                ) {
+                    //$answer = 'Estás hablando sobre ' . http_build_query($res['analysis']['concepts']);
+
+                    foreach ($res['analysis']['concepts'] as $concept) {
+                        if ($concept['text'] == 'Fin de semana' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
+                            $answer = 'Estás hablando sobre ' . $concept['text'];
+                        }
+
+                        if ($concept['text'] == 'Semana laboral' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
+                            $answer = 'Estás hablando sobre ' . $concept['text'];
+                        }
+
+                        if ($concept['text'] == 'Tarde' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
+                            $answer = 'Estás hablando sobre ' . $concept['text'];
+                        }
+                    }
+                }
+
+                if (count($res['analysis']['concepts']) == 0) {
+                    $answer = 'Lo siento, creo que no comprendo, ¿Puedes intentarlo de nuevo?';
+                }
+
+                if (
+                    $res['analysis']['sentiment']['document']['label'] == 'negative' &&
+                    $res['analysis']['sentiment']['document']['score'] < self::NEGATIVENESS_THRESHOLD
+                ) {
+                    $answer = 'Lo siento, solo soy un bot que hace lo que puede...';
+                }
             } catch (Exception $e) {
-                $res = json_encode(['error' => $e->getMessage()]);
+                $answer = 'Puede que necesite frases más largas: '.PHP_EOL.json_encode(['error' => $e->getMessage()]);
             }
         }
 
 
         $data = [
             'chat_id' => $chat_id,
-            'text'    => $res,
+            'text'    => $answer,
         ];
 
         return Request::sendMessage($data);
