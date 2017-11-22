@@ -28,6 +28,24 @@ agenda_debug:
       _format: json
       _controller: AppBundle:REST/Agenda:debug
 
+agenda_search:
+  path: /agenda_search
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Agenda:search
+
+agenda_week:
+  path: /agenda_week
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Agenda:week
+
 # Restaurants
 restaurants_debug:
   path: /restaurants_debug

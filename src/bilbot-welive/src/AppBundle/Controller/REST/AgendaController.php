@@ -5,6 +5,7 @@ namespace AppBundle\Controller\REST;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class AgendaController extends FOSRestController
 {
@@ -21,10 +22,42 @@ class AgendaController extends FOSRestController
                 'select * from rootTable limit 10;'
             );
 
-        $data = [
-            'results'    => $res,
-        ];
+        return new JsonResponse($res, 200);
+    }
 
-        return new JsonResponse($data, 200);
+    public function searchAction(Request $request) {
+        $keyword = $request->query->get('term');
+
+        $res = $this
+            ->get('welive_api_consumer')
+            ->query(
+                self::DATASET,
+                self::RESOURCE,
+                "select titulo, hora, lugar, direccion, tipo, fecha_hasta, info 
+                  from rootTable 
+                  where 
+                  titulo LIKE '%".$keyword."%' OR 
+                  lugar LIKE '%".$keyword."%' AND 
+                  DATE(fecha_hasta) > '".date('Y-m-d H:i:s')."' AND
+                  DATE(fecha_desde) < '".date('Y-m-d H:i:s')."';"
+            );
+
+        return new JsonResponse($res, 200);
+    }
+
+    public function weekAction() {
+        $res = $this
+            ->get('welive_api_consumer')
+            ->query(
+                self::DATASET,
+                self::RESOURCE,
+                "select titulo, hora, lugar, direccion, tipo, fecha_hasta, fecha_desde, info 
+                  from rootTable 
+                  where 
+                  DATE(fecha_hasta) > '".date('Y-m-d H:i:s')."' AND
+                  DATE(fecha_desde) < '".date('Y-m-d H:i:s')."';"
+            );
+
+        return new JsonResponse($res, 200);
     }
 }
