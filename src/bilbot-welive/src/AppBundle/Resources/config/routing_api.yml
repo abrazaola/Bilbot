@@ -7,119 +7,123 @@ api_test_name:
       _format: json
       _controller: AppBundle:REST/Test:execute
 
-clubs:
-  path: /clubs
+# Clubs
+clubs_debug:
+  path: /clubs_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:clubs
+      _controller: AppBundle:REST/Clubs:debug
 
-agenda:
-  path: /agenda
-  methods: [GET]
-  requirements:
-      _format: json
-  defaults:
-      _format: json
-      _controller: AppBundle:REST/Gateway:agenda
 
-restaurants:
-  path: /restaurants
+# Agenda
+agenda_debug:
+  path: /agenda_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:restaurants
+      _controller: AppBundle:REST/Agenda:debug
 
-bikes:
-  path: /bikes
+# Restaurants
+restaurants_debug:
+  path: /restaurants_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:bikes
+      _controller: AppBundle:REST/Restaurants:debug
 
-buses_per_route:
-  path: /buses_per_route
+# Bikes
+bikes_debug:
+  path: /bikes_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:busesPerRoute
+      _controller: AppBundle:REST/Bikes:debug
 
-bus_stops:
-  path: /bus_stops
+# Buses per route
+buses_per_route_debug:
+  path: /buses_per_route_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:busStops
+      _controller: AppBundle:REST/BusesPerRoute:debug
 
-nightly_bus_routes:
-  path: /nightly_bus_routes
+# Bus stops
+bus_stops_debug:
+  path: /bus_stops_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:nightlyBusRoutes
+      _controller: AppBundle:REST/BusStops:debug
 
-nightly_bus_routes:
-  path: /nightly_bus_routes
+# Nightly bus routes
+nightly_bus_routes_debug:
+  path: /nightly_bus_routes_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:nightlyBusRoutes
+      _controller: AppBundle:REST/NightlyBusRoutes:debug
 
-daily_bus_routes:
-  path: /daily_bus_routes
+# Daily bus routes
+daily_bus_routes_debug:
+  path: /daily_bus_routes_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:dailyBusRoutes
+      _controller: AppBundle:REST/DailyBusRoutes:debug
 
-tourist_offices:
-  path: /tourist_offices
+# Tourist Offices
+tourist_offices_debug:
+  path: /tourist_offices_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:touristOffices
+      _controller: AppBundle:REST/TouristOffices:debug
 
-tourist_attractions:
-  path: /tourist_attractions
+# Tourist attractions
+tourist_attractions_debug:
+  path: /tourist_attractions_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:touristAttractions
+      _controller: AppBundle:REST/TouristAttractions:debug
 
-hotels:
-  path: /hotels
+# Hotels
+hotels_debug:
+  path: /hotels_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:hotels
+      _controller: AppBundle:REST/Hotels:debug
 
-portals:
-  path: /portals
+# Portals
+portals_debug:
+  path: /portals_debug
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Gateway:portals
+      _controller: AppBundle:REST/Portals:debug
