@@ -1,4 +1,4 @@
-# Bilbot
+# Bilbot (OUTDATED, Pending review)
 
 Design of an extensible chatbots cloud architecture for its application to the improvement of the consumption and the exploitation of public services and data.
 

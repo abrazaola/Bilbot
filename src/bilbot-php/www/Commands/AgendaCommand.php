@@ -14,7 +14,7 @@ use Longman\TelegramBot\Request;
 class AgendaCommand extends UserCommand
 {
     const RELEVANCE_THRESHOLD = 0.85;
-    const NEGATIVENESS_THRESHOLD = -0.9;
+    const NEGATIVENESS_THRESHOLD = -1;
     /**
      * @var string
      */
@@ -45,62 +45,108 @@ class AgendaCommand extends UserCommand
     {
         $message = $this->getMessage();
         $chat_id = $message->getChat()->getId();
-        $text    = trim($message->getText(true));
-        $answer = '...';
+        $incomingMessage    = trim($message->getText(true));
+        $answerMessage = 'Lo siento, pero no he encuentro información relevante. ¿Puedes probar a preguntármelo de otro modo?';
+        $agendaKeywords = [
+            'euskalduna',
+            'guggenheim',
+            'conciertos',
+            'concierto',
+            'eventos',
+            'evento',
+        ];
 
-        if ($text === '') {
-            $answer = 'Uso del comando: ' . $this->getUsage();
-        } else {
-            try {
-                $client = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WATSON_API_ENDPOINT]);
+        if ($incomingMessage === '') {
+            $answerMessage = 'Uso del comando: ' . $this->getUsage();
 
-                $res = $client->get(
-                    'understandme',
-                    ['query' => ['text' => $text]]
-                )->getBody()->getContents();
+            $data = [
+                'chat_id' => $chat_id,
+                'text'    => $answerMessage,
+            ];
 
-                $res = json_decode($res, true);
-                var_dump($res);
-                if (
-                    $res['analysis']['sentiment']['document']['label'] == 'positive' ||
-                    $res['analysis']['sentiment']['document']['label'] == 'neutral'
-                ) {
-                    //$answer = 'Estás hablando sobre ' . http_build_query($res['analysis']['concepts']);
+            return Request::sendMessage($data);
+        }
 
-                    foreach ($res['analysis']['concepts'] as $concept) {
-                        if ($concept['text'] == 'Fin de semana' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
-                            $answer = 'Estás hablando sobre ' . $concept['text'];
+        try {
+            $clientWatson = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WATSON_API_ENDPOINT]);
+            $resWatson = $clientWatson->get(
+                'understandme',
+                ['query' => ['text' => $incomingMessage]]
+            )->getBody()->getContents();
+            $resWatson = json_decode($resWatson, true);
+            $incomingMessageWords = explode(" ", strtolower($incomingMessage));;
+
+            var_dump($resWatson);
+            var_dump($incomingMessageWords);
+
+            if (
+                $resWatson['analysis']['sentiment']['document']['label'] == 'negative'
+            ) {
+                $answerMessage = 'Lo siento, solo soy un bot que hace lo que puede...';
+
+                $data = [
+                    'chat_id' => $chat_id,
+                    'text'    => $answerMessage,
+                ];
+
+                return Request::sendMessage($data);
+            }
+
+            if (
+                $resWatson['analysis']['sentiment']['document']['label'] == 'positive' ||
+                $resWatson['analysis']['sentiment']['document']['label'] == 'neutral'
+            ) {
+                $answerMessage = 'Estás hablando sobre ' . http_build_query($resWatson['analysis']['concepts']);
+/*
+                foreach ($resWatson['analysis']['concepts'] as $concept) {
+                    if ($concept['text'] == 'Fin de semana' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
+                        $answerMessage = 'Estás hablando sobre ' . $concept['text'];
+                        break;
+                    }
+
+                    if ($concept['text'] == 'Semana laboral' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
+                        $answerMessage = 'Estás hablando sobre ' . $concept['text'];
+                        break;
+                    }
+
+                    if ($concept['text'] == 'Tarde' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
+                        $answerMessage = 'Estás hablando sobre ' . $concept['text'];
+                        break;
+                    }
+                }
+*/
+                foreach ($agendaKeywords as $keyword) {
+                    if (in_array($keyword, $incomingMessageWords)) {
+                        $clientWatson = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WELIVE_API_ENDPOINT]);
+                        $resWelive = $clientWatson->get(
+                            'agenda_week'
+                        )->getBody()->getContents();
+                        $resWelive = json_decode($resWelive, true);
+                        //var_dump($resWelive);
+
+                        $answerMessage = 'Con respecto a '.$keyword.', aquí tienes la agenda para esta semana'.PHP_EOL;
+                        foreach ($resWelive['rows'] as $row) {
+                            $answerMessage .= ' - '.$row['titulo'].' en '.$row['lugar'].' hasta el '.$row['fecha_hasta'].PHP_EOL;
                         }
 
-                        if ($concept['text'] == 'Semana laboral' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
-                            $answer = 'Estás hablando sobre ' . $concept['text'];
-                        }
-
-                        if ($concept['text'] == 'Tarde' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
-                            $answer = 'Estás hablando sobre ' . $concept['text'];
-                        }
+                        break;
                     }
                 }
 
-                if (count($res['analysis']['concepts']) == 0) {
-                    $answer = 'Lo siento, creo que no comprendo, ¿Puedes intentarlo de nuevo?';
-                }
+                $data = [
+                    'chat_id' => $chat_id,
+                    'text'    => $answerMessage,
+                ];
 
-                if (
-                    $res['analysis']['sentiment']['document']['label'] == 'negative' &&
-                    $res['analysis']['sentiment']['document']['score'] < self::NEGATIVENESS_THRESHOLD
-                ) {
-                    $answer = 'Lo siento, solo soy un bot que hace lo que puede...';
-                }
-            } catch (Exception $e) {
-                $answer = 'Puede que necesite frases más largas: '.PHP_EOL.json_encode(['error' => $e->getMessage()]);
+                return Request::sendMessage($data);
             }
+        } catch (Exception $e) {
+            $answerMessage = 'Puede que necesite frases más largas: '.PHP_EOL.json_encode(['error' => $e->getMessage()]);
         }
-
 
         $data = [
             'chat_id' => $chat_id,
-            'text'    => $answer,
+            'text'    => $answerMessage,
         ];
 
         return Request::sendMessage($data);
