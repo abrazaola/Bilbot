@@ -4,6 +4,8 @@ namespace Longman\TelegramBot\Commands\UserCommands;
 
 use Exception;
 use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Request;
 
 /**
@@ -45,7 +47,7 @@ class AgendaCommand extends UserCommand
     {
         $message = $this->getMessage();
         $chat_id = $message->getChat()->getId();
-        $incomingMessage    = trim($message->getText(true));
+        $incomingMessage = trim($message->getText(true));
         $answerMessage = 'Lo siento, pero no he encuentro información relevante. ¿Puedes probar a preguntármelo de otro modo?';
         $agendaKeywords = [
             'euskalduna',
@@ -56,12 +58,14 @@ class AgendaCommand extends UserCommand
             'evento',
         ];
 
+        Request::sendChatAction(['chat_id' => $chat_id, 'action' => 'typing']);
+
         if ($incomingMessage === '') {
             $answerMessage = 'Uso del comando: ' . $this->getUsage();
 
             $data = [
                 'chat_id' => $chat_id,
-                'text'    => $answerMessage,
+                'text' => $answerMessage,
             ];
 
             return Request::sendMessage($data);
@@ -76,8 +80,8 @@ class AgendaCommand extends UserCommand
             $resWatson = json_decode($resWatson, true);
             $incomingMessageWords = explode(" ", strtolower($incomingMessage));;
 
-            var_dump($resWatson);
-            var_dump($incomingMessageWords);
+            //var_dump($resWatson);
+            //var_dump($incomingMessageWords);
 
             if (
                 $resWatson['analysis']['sentiment']['document']['label'] == 'negative'
@@ -86,7 +90,7 @@ class AgendaCommand extends UserCommand
 
                 $data = [
                     'chat_id' => $chat_id,
-                    'text'    => $answerMessage,
+                    'text' => $answerMessage,
                 ];
 
                 return Request::sendMessage($data);
@@ -97,24 +101,25 @@ class AgendaCommand extends UserCommand
                 $resWatson['analysis']['sentiment']['document']['label'] == 'neutral'
             ) {
                 $answerMessage = 'Estás hablando sobre ' . http_build_query($resWatson['analysis']['concepts']);
-/*
-                foreach ($resWatson['analysis']['concepts'] as $concept) {
-                    if ($concept['text'] == 'Fin de semana' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
-                        $answerMessage = 'Estás hablando sobre ' . $concept['text'];
-                        break;
-                    }
+                /*
+                                foreach ($resWatson['analysis']['concepts'] as $concept) {
+                                    if ($concept['text'] == 'Fin de semana' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
+                                        $answerMessage = 'Estás hablando sobre ' . $concept['text'];
+                                        break;
+                                    }
 
-                    if ($concept['text'] == 'Semana laboral' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
-                        $answerMessage = 'Estás hablando sobre ' . $concept['text'];
-                        break;
-                    }
+                                    if ($concept['text'] == 'Semana laboral' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
+                                        $answerMessage = 'Estás hablando sobre ' . $concept['text'];
+                                        break;
+                                    }
 
-                    if ($concept['text'] == 'Tarde' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
-                        $answerMessage = 'Estás hablando sobre ' . $concept['text'];
-                        break;
-                    }
-                }
-*/
+                                    if ($concept['text'] == 'Tarde' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
+                                        $answerMessage = 'Estás hablando sobre ' . $concept['text'];
+                                        break;
+                                    }
+                                }
+                */
+
                 foreach ($agendaKeywords as $keyword) {
                     if (in_array($keyword, $incomingMessageWords)) {
                         $clientWatson = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WELIVE_API_ENDPOINT]);
@@ -124,29 +129,43 @@ class AgendaCommand extends UserCommand
                         $resWelive = json_decode($resWelive, true);
                         //var_dump($resWelive);
 
-                        $answerMessage = 'Con respecto a '.$keyword.', aquí tienes la agenda para esta semana'.PHP_EOL;
+                        $answerMessage = 'Con respecto a ' . $keyword . ', aquí tienes la agenda para esta semana' . PHP_EOL;
+                        $answerButtons = [];
+
                         foreach ($resWelive['rows'] as $row) {
-                            $answerMessage .= ' - '.$row['titulo'].' en '.$row['lugar'].' hasta el '.$row['fecha_hasta'].PHP_EOL;
+                            $answerButtons[] = [new InlineKeyboardButton([
+                                'text' => '📆 ' . $row['titulo'] . ' hasta el ' . $row['fecha_hasta'],
+                                'callback_data' => md5($row['titulo'])
+                            ])];
                         }
 
-                        break;
+                        $data = [
+                            'chat_id' => $chat_id,
+                            'text' => $answerMessage,
+                            'reply_markup' => new InlineKeyboard(...$answerButtons),
+                        ];
+
+                        //var_dump($data);
+
+                        return Request::sendMessage($data);
                     }
                 }
 
+
                 $data = [
                     'chat_id' => $chat_id,
-                    'text'    => $answerMessage,
+                    'text' => $answerMessage,
                 ];
 
                 return Request::sendMessage($data);
             }
         } catch (Exception $e) {
-            $answerMessage = 'Puede que necesite frases más largas: '.PHP_EOL.json_encode(['error' => $e->getMessage()]);
+            $answerMessage = 'Puede que necesite frases más largas: ' . PHP_EOL . json_encode(['error' => $e->getMessage()]);
         }
 
         $data = [
             'chat_id' => $chat_id,
-            'text'    => $answerMessage,
+            'text' => $answerMessage,
         ];
 
         return Request::sendMessage($data);
