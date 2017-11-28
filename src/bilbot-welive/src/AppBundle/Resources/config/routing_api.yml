@@ -46,6 +46,14 @@ agenda_week:
       _format: json
       _controller: AppBundle:REST/Agenda:week
 
+agenda_event:
+  path: /agenda_event
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Agenda:event
 # Restaurants
 restaurants_debug:
   path: /restaurants_debug

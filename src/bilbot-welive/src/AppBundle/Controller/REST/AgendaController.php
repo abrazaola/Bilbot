@@ -60,4 +60,21 @@ class AgendaController extends FOSRestController
 
         return new JsonResponse($res, 200);
     }
+
+    public function eventAction(Request $request) {
+        $eventTitle = $request->query->get('title');
+
+        $res = $this
+            ->get('welive_api_consumer')
+            ->query(
+                self::DATASET,
+                self::RESOURCE,
+                "select titulo, hora, lugar, direccion, tipo, fecha_hasta, fecha_desde, info 
+                  from rootTable 
+                  where 
+                  titulo = '".$eventTitle."';"
+            );
+
+        return new JsonResponse($res, 200);
+    }
 }

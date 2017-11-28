@@ -51,8 +51,8 @@ class GetUpdatesDaemon
             }
 
             TelegramLog::initErrorLog(__DIR__ . Constants::TELEGRAM_ERROR_LOGS_PATH);
-            TelegramLog::initDebugLog(__DIR__ . Constants::TELEGRAM_DEBUG_LOGS_PATH);
-            //Longman\TelegramBot\TelegramLog::initUpdateLog(__DIR__ . "/{$bot_username}_update.log");
+            //TelegramLog::initDebugLog(__DIR__ . Constants::TELEGRAM_DEBUG_LOGS_PATH);
+            //TelegramLog::initUpdateLog(__DIR__ . Constants::TELEGRAM_UPDATE_LOGS_PATH);
 
             $this->telegram->setDownloadPath(__DIR__ . Constants::TELEGRAM_DOWNLOADS_PATH);
             $this->telegram->setUploadPath(__DIR__ . Constants::TELEGRAM_UPLOADS_PATH);
