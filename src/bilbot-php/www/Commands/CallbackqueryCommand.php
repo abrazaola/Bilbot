@@ -73,7 +73,7 @@ class CallbackqueryCommand extends SystemCommand
             return Request::emptyResponse();
         }
 
-        $title = substr($callback_data, strlen($entityKey[0].'_'));
+        $title = $this->decodeData($callback_data, $entityKey);
 
         $clientWelive = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WELIVE_API_ENDPOINT]);
         $resWelive = $clientWelive->get(
@@ -108,7 +108,7 @@ class CallbackqueryCommand extends SystemCommand
         switch ($entityType) {
             case 'agenda':
                 $answer =
-                    'Sobre ' . $data['rows'][0]['titulo'] . PHP_EOL .
+                    '📆 Sobre ' . $data['rows'][0]['titulo'] . PHP_EOL .
                     'tiene lugar en ' . $data['rows'][0]['lugar'] . PHP_EOL .
                     $data['rows'][0]['direccion'] . PHP_EOL .
                     'y está vigente hasta el ' . $data['rows'][0]['fecha_hasta'] . PHP_EOL;
@@ -116,5 +116,12 @@ class CallbackqueryCommand extends SystemCommand
         }
 
         return $answer;
+    }
+
+    private function decodeData($callback_data, $entityKey)
+    {
+        $title = base64_decode(substr($callback_data, strlen($entityKey[0] . '_')));
+
+        return $title;
     }
 }

@@ -72,7 +72,7 @@ class AgendaController extends FOSRestController
                 "select titulo, hora, lugar, direccion, tipo, fecha_hasta, fecha_desde, info 
                   from rootTable 
                   where 
-                  titulo = '".$eventTitle."';"
+                  titulo LIKE '".$eventTitle."%';"
             );
 
         return new JsonResponse($res, 200);

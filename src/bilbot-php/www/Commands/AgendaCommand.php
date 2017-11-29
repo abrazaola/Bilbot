@@ -16,39 +16,39 @@ use ReflectionClass;
  */
 class AgendaCommand extends UserCommand
 {
-    const RELEVANCE_THRESHOLD = 0.85;
-    const NEGATIVENESS_THRESHOLD = -1;
-
     protected $name = 'agenda';
     protected $description = 'Información sobre la agenda de eventos de Bilbao';
     protected $usage = '/agenda <texto>';
     protected $version = '0.1.0';
 
-    /**
-     * Command execute method
-     *
-     * @return \Longman\TelegramBot\Entities\ServerResponse
-     * @throws \Longman\TelegramBot\Exception\TelegramException
-     */
+    const RELEVANCE_THRESHOLD = 0.85;
+    const NEGATIVENESS_THRESHOLD = -1;
+    const DATA_LENGTH = 24;
+    const WELIVE_SEARCH_METHOD = 'agenda_search';
+    const WELIVE_LIST_METHOD = 'agenda_week';
+
     public function execute()
     {
         $message = $this->getMessage();
         $chat_id = $message->getChat()->getId();
-        $incomingMessage = trim($message->getText(true));
-        $incomingMessage = str_replace(['?', '!', '+'], '', $incomingMessage);
+        $incomingMessage = str_replace(['¿', '?', '¡', '!', '+'], '', trim($message->getText(true)));
+        $incomingMessageWords = explode(" ", strtolower($incomingMessage));
+        $fallbackMessage = '😣 Lo siento, pero no he encuentro información relevante. ¿Puedes probar a preguntármelo de otro modo?';
 
-        $answerMessage = 'Lo siento, pero no he encuentro información relevante. ¿Puedes probar a preguntármelo de otro modo?';
-        $agendaKeywords = [
+        $answerMessage = $fallbackMessage;
+
+        $genericKeywords = [
+            'eventos','evento',
+            'actividad', 'actividades'
+        ];
+
+        $domainKeywords = [
             'euskalduna',
             'guggenheim',
-            'conciertos',
-            'concierto',
-            'eventos',
-            'evento',
-            'concurso',
-            'concursos',
-            'taller',
-            'talleres'
+            'arena',
+            'concierto', 'conciertos',
+            'concurso', 'concursos',
+            'taller', 'talleres'
         ];
 
         if ($incomingMessage === '') {
@@ -64,31 +64,8 @@ class AgendaCommand extends UserCommand
 
         try {
             Request::sendChatAction(['chat_id' => $chat_id, 'action' => 'typing']);
-
-            $clientWatson = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WATSON_API_ENDPOINT]);
-            $resWatson = $clientWatson->get(
-                'understandme',
-                ['query' => ['text' => $incomingMessage]]
-            )->getBody()->getContents();
-            $resWatson = json_decode($resWatson, true);
-            $incomingMessageWords = explode(" ", strtolower($incomingMessage));
-            $emotionPrefix = '';
-
-            //var_dump($resWatson);
-            //var_dump($incomingMessageWords);
-
-            if (
-                $resWatson['analysis']['sentiment']['document']['label'] == 'negative'
-            ) {
-                $emotionPrefix = '😔 Lo siento, solo soy un bot';
-            }
-
-            if (
-                $resWatson['analysis']['sentiment']['document']['label'] == 'positive'
-            ) {
-                $emotionPrefix = '¡Buenas noticias!';
-            }
-
+            $resWatson = $this->sendToWatson($incomingMessage);
+            $emotionPrefix = $this->getEmotionPrefix($resWatson);
 
             foreach ($resWatson['analysis']['concepts'] as $concept) {
                 if ($concept['text'] == 'Fin de semana' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
@@ -107,51 +84,23 @@ class AgendaCommand extends UserCommand
                 }
             }
 
-
-            foreach ($agendaKeywords as $keyword) {
+            foreach ($domainKeywords as $keyword) {
                 if (in_array($keyword, $incomingMessageWords)) {
-                    $clientWelive = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WELIVE_API_ENDPOINT]);
-                    $resWelive = $clientWelive->get(
-                        'agenda_search',
-                        [
-                            'query' => [
-                                'term' => $keyword,
-                            ]
-                        ]
-                    )->getBody()->getContents();
-                    $resWelive = json_decode($resWelive, true);
-
-                    $answerMessage =
-                        $emotionPrefix .
-                        'Con respecto a ' .
-                        $keyword .
-                        ', aquí tienes lo que he encontrado' .
-                        PHP_EOL;
-
-                    $answerButtons = [];
-
-                    foreach ($resWelive['rows'] as $row) {
-                        $answerButtons[] = [new InlineKeyboardButton([
-                            'text' => '📆 ' . $row['titulo'] . ' hasta el ' . $row['fecha_hasta'],
-                            'callback_data' => 'agenda_'.$row['titulo']
-                        ])];
-                    }
-
-                    $reflect  = new ReflectionClass(InlineKeyboard::class);
-                    $keyboard = $reflect->newInstanceArgs($answerButtons);
-
-                    //var_dump($keyboard);
-
-                    $data = [
-                        'chat_id' => $chat_id,
-                        'text' => $answerMessage,
-                        'reply_markup' => $keyboard,
-                    ];
+                    Request::sendChatAction(['chat_id' => $chat_id, 'action' => 'typing']);
+                    $data = $this->search($keyword, $emotionPrefix, $fallbackMessage, $chat_id, true);
 
                     return Request::sendMessage($data);
                 }
             }
 
+            foreach ($genericKeywords as $keyword) {
+                if (in_array($keyword, $incomingMessageWords)) {
+                    Request::sendChatAction(['chat_id' => $chat_id, 'action' => 'typing']);
+                    $data = $this->search($keyword, $emotionPrefix, $fallbackMessage, $chat_id, false);
+
+                    return Request::sendMessage($data);
+                }
+            }
 
             $data = [
                 'chat_id' => $chat_id,
@@ -160,7 +109,7 @@ class AgendaCommand extends UserCommand
 
             return Request::sendMessage($data);
         } catch (Exception $e) {
-            $answerMessage = 'Necesito una frase más larga: ' . PHP_EOL . json_encode(['error' => $e->getMessage()]);
+            $answerMessage = '😕 Necesito una frase más larga: ' . PHP_EOL . json_encode(['error' => $e->getMessage()]);
         }
 
         $data = [
@@ -169,5 +118,109 @@ class AgendaCommand extends UserCommand
         ];
 
         return Request::sendMessage($data);
+    }
+
+    private function search($keyword, $emotionPrefix, $fallbackMessage, $chatId, $withTerm = false)
+    {
+        if ($withTerm) {
+            $resWelive = $this->sendToWeLive(self::WELIVE_SEARCH_METHOD, $keyword);
+        } else {
+            $resWelive = $this->sendToWeLive(self::WELIVE_LIST_METHOD);
+        }
+
+        if ($resWelive['count'] == 0) {
+            $data = [
+                'chat_id' => $chatId,
+                'text' => $fallbackMessage,
+            ];
+        } else {
+            $answerMessage =
+                $emotionPrefix .
+                'Con respecto a ' .
+                $keyword .
+                ', aquí tienes lo que he encontrado' .
+                PHP_EOL;
+
+            $answerButtons = [];
+
+            foreach ($resWelive['rows'] as $row) {
+                $answerButtons[] = [new InlineKeyboardButton([
+                    'text' => '📆 ' . $row['titulo'],
+                    'callback_data' => $this->encodeData($row['titulo'])
+                ])];
+            }
+
+            $reflect = new ReflectionClass(InlineKeyboard::class);
+            $keyboard = $reflect->newInstanceArgs($answerButtons);
+
+            $data = [
+                'chat_id' => $chatId,
+                'text' => $answerMessage,
+                'reply_markup' => $keyboard,
+            ];
+        }
+
+        return $data;
+    }
+
+    private function sendToWatson($incomingMessage)
+    {
+        $clientWatson = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WATSON_API_ENDPOINT]);
+        $resWatson = $clientWatson->get(
+            'understandme',
+            ['query' => ['text' => $incomingMessage]]
+        )->getBody()->getContents();
+
+        $resWatson = json_decode($resWatson, true);
+
+        return $resWatson;
+    }
+
+    private function sendToWeLive($method, $keyword = false)
+    {
+        $clientWelive = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WELIVE_API_ENDPOINT]);
+
+        if ($keyword == false) {
+            $resWelive = $clientWelive->get(
+                $method
+            )->getBody()->getContents();
+        } else {
+            $resWelive = $clientWelive->get(
+                $method,
+                [
+                    'query' => [
+                        'term' => $keyword,
+                    ]
+                ]
+            )->getBody()->getContents();
+        }
+
+        $resWelive = json_decode($resWelive, true);
+
+        return $resWelive;
+    }
+
+    private function getEmotionPrefix($resWatson)
+    {
+        $emotionPrefix = '';
+
+        if (
+            $resWatson['analysis']['sentiment']['document']['label'] == 'negative'
+        ) {
+            $emotionPrefix = '😔 Lo siento, solo soy un bot... ';
+        }
+
+        if (
+            $resWatson['analysis']['sentiment']['document']['label'] == 'positive'
+        ) {
+            $emotionPrefix = '😃 ¡Buenas noticias! ';
+        }
+
+        return $emotionPrefix;
+    }
+
+    private function encodeData($title)
+    {
+        return 'agenda_' . base64_encode(substr($title, 0, self::DATA_LENGTH));
     }
 }
