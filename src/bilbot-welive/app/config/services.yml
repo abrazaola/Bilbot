@@ -7,3 +7,5 @@ services:
     welive_api_consumer:
         class: AppBundle\DependencyInjection\WeLiveApiConsumer
         arguments: ['%welive_api_endpoint%']
+    distance_calculator_between_points:
+        class: AppBundle\DependencyInjection\DistanceCalculatorBetweenPoints

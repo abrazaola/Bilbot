@@ -23,9 +23,12 @@ class AgendaCommand extends UserCommand
 
     const RELEVANCE_THRESHOLD = 0.85;
     const NEGATIVENESS_THRESHOLD = -1;
-    const DATA_LENGTH = 24;
+
     const WELIVE_SEARCH_METHOD = 'agenda_search';
     const WELIVE_LIST_METHOD = 'agenda_week';
+
+    const DATA_LENGTH = 24;
+    const DATA_PREFIX = 'agenda_';
 
     public function execute()
     {
@@ -39,13 +42,17 @@ class AgendaCommand extends UserCommand
 
         $genericKeywords = [
             'eventos','evento',
-            'actividad', 'actividades'
+            'actividad', 'actividades',
+            'bilbao'
         ];
 
         $domainKeywords = [
             'euskalduna',
             'guggenheim',
             'arena',
+            'perros',
+            'animales',
+            'arte',
             'concierto', 'conciertos',
             'concurso', 'concursos',
             'taller', 'talleres'
@@ -221,6 +228,6 @@ class AgendaCommand extends UserCommand
 
     private function encodeData($title)
     {
-        return 'agenda_' . base64_encode(substr($title, 0, self::DATA_LENGTH));
+        return self::DATA_PREFIX . base64_encode(substr($title, 0, self::DATA_LENGTH));
     }
 }

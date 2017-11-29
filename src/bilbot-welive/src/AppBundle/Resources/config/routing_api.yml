@@ -74,6 +74,24 @@ bikes_debug:
       _format: json
       _controller: AppBundle:REST/Bikes:debug
 
+bikes_search:
+  path: /bikes_search
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Bikes:search
+
+bikes_near_point:
+  path: /bikes_near_point
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Bikes:nearPoint
+
 # Buses per route
 buses_per_route_debug:
   path: /buses_per_route_debug
