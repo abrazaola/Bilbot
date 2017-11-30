@@ -68,7 +68,6 @@ class BikesController extends FOSRestController
                   BLIBRES > 0);"
             );
 
-        dump(json_decode(json_encode($res)), true);
         foreach ($res['rows'] as $row) {
             $meters = $calculator->getMetersBetweenPoints($coordX, $coordY, $row['LATITUD'], $row['LONGITUD']);
 
@@ -78,5 +77,38 @@ class BikesController extends FOSRestController
         }
 
         return new JsonResponse($nearPoints, 200);
+    }
+
+    public function listAction() {
+        $res = $this
+            ->get('welive_api_consumer')
+            ->query(
+                self::DATASET,
+                self::RESOURCE,
+                "select _id, ALIBRES, BLIBRES, NOMBRE, LATITUD, LONGITUD 
+                  from results
+                  where 
+                  (ALIBRES > 0 OR 
+                  BLIBRES > 0);"
+            );
+
+        return new JsonResponse($res, 200);
+    }
+
+    public function detailAction(Request $request) {
+        $bikePointName = $request->query->get('NOMBRE');
+
+        $res = $this
+            ->get('welive_api_consumer')
+            ->query(
+                self::DATASET,
+                self::RESOURCE,
+                "select _id, ALIBRES, BLIBRES, NOMBRE, LATITUD, LONGITUD 
+                  from results 
+                  where 
+                  NOMBRE LIKE '".$bikePointName."%';"
+            );
+
+        return new JsonResponse($res, 200);
     }
 }

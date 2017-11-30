@@ -20,12 +20,12 @@ class CallbackqueryCommand extends SystemCommand
 
         $entities = [
             'agenda' => [
-                'action' => 'agenda_event',
+                'action' => 'agenda_detail',
                 'column' => 'title'
             ],
             'bikes' => [
-                'action' => 'agenda_event',
-                'column' => 'title'
+                'action' => 'bikes_detail',
+                'column' => 'NOMBRE'
             ],
             'bpr' => [
                 'action' => 'agenda_event',
@@ -112,6 +112,13 @@ class CallbackqueryCommand extends SystemCommand
                     'tiene lugar en ' . $data['rows'][0]['lugar'] . PHP_EOL .
                     $data['rows'][0]['direccion'] . PHP_EOL .
                     'y está vigente hasta el ' . $data['rows'][0]['fecha_hasta'] . PHP_EOL;
+                break;
+            case 'bikes':
+                $answer =
+                    '🚲 Punto de recogida ' . $data['rows'][0]['NOMBRE'] . PHP_EOL .
+                    'Libres de tipo A: ' . $data['rows'][0]['ALIBRES'] . PHP_EOL .
+                    'Libres de tipo B: ' . $data['rows'][0]['BLIBRES'] . PHP_EOL .
+                    '📍 Mapa => https://www.google.com/maps/?q='.$data['rows'][0]['LATITUD'].','.$data['rows'][0]['LONGITUD'] . PHP_EOL;
                 break;
         }
 

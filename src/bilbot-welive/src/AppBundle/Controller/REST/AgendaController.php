@@ -45,7 +45,7 @@ class AgendaController extends FOSRestController
         return new JsonResponse($res, 200);
     }
 
-    public function weekAction() {
+    public function listAction() {
         $res = $this
             ->get('welive_api_consumer')
             ->query(
@@ -61,7 +61,7 @@ class AgendaController extends FOSRestController
         return new JsonResponse($res, 200);
     }
 
-    public function eventAction(Request $request) {
+    public function detailAction(Request $request) {
         $eventTitle = $request->query->get('title');
 
         $res = $this

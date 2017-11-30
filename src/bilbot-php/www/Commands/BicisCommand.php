@@ -10,25 +10,25 @@ use Longman\TelegramBot\Request;
 use ReflectionClass;
 
 /**
- * User "/agenda" command
+ * User "/bicis" command
  *
- * Returns information about Bilbao's events agenda
+ * Returns information about Bilbao's bike rental service
  */
-class AgendaCommand extends UserCommand
+class BicisCommand extends UserCommand
 {
-    protected $name = 'agenda';
-    protected $description = 'Información sobre la agenda de eventos de Bilbao';
-    protected $usage = '/agenda <texto>';
+    protected $name = 'bicis';
+    protected $description = 'Información sobre los puntos de recogida de bicicletas';
+    protected $usage = '/bicis <texto>';
     protected $version = '0.1.0';
 
     const RELEVANCE_THRESHOLD = 0.85;
     const NEGATIVENESS_THRESHOLD = -1;
 
-    const WELIVE_SEARCH_METHOD = 'agenda_search';
-    const WELIVE_LIST_METHOD = 'agenda_list';
+    const WELIVE_SEARCH_METHOD = 'bikes_search';
+    const WELIVE_LIST_METHOD = 'bikes_list';
 
     const DATA_LENGTH = 24;
-    const DATA_PREFIX = 'agenda_';
+    const DATA_PREFIX = 'bikes_';
 
     public function execute()
     {
@@ -41,21 +41,22 @@ class AgendaCommand extends UserCommand
         $answerMessage = $fallbackMessage;
 
         $genericKeywords = [
-            'eventos','evento',
-            'actividad', 'actividades',
-            'bilbao'
+            'bici','bicis',
+            'bicicleta', 'bicicletas',
+            'recoger', 'recojemos', 'recojo',
+            'encontrar',
+            'alquilar',
+            'cerca'
         ];
 
         $specificKeywords = [
-            'euskalduna',
-            'guggenheim',
-            'arena',
-            'perros',
-            'animales',
-            'arte',
-            'concierto', 'conciertos',
-            'concurso', 'concursos',
-            'taller', 'talleres'
+            'levante',
+            'abando',
+            'arriaga',
+            'rekalde',
+            'corazon', 'corazón',
+            'indautxu',
+            'bolueta',
         ];
 
         if ($incomingMessage === '') {
@@ -152,8 +153,8 @@ class AgendaCommand extends UserCommand
 
             foreach ($resWelive['rows'] as $row) {
                 $answerButtons[] = [new InlineKeyboardButton([
-                    'text' => '📆 ' . $row['titulo'],
-                    'callback_data' => $this->encodeData($row['titulo'])
+                    'text' => '📍 ' . $row['NOMBRE'],
+                    'callback_data' => $this->encodeData($row['NOMBRE'])
                 ])];
             }
 

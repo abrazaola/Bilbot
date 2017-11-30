@@ -37,23 +37,23 @@ agenda_search:
       _format: json
       _controller: AppBundle:REST/Agenda:search
 
-agenda_week:
-  path: /agenda_week
+agenda_list:
+  path: /agenda_list
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Agenda:week
+      _controller: AppBundle:REST/Agenda:list
 
-agenda_event:
-  path: /agenda_event
+agenda_detail:
+  path: /agenda_detail
   methods: [GET]
   requirements:
       _format: json
   defaults:
       _format: json
-      _controller: AppBundle:REST/Agenda:event
+      _controller: AppBundle:REST/Agenda:detail
 # Restaurants
 restaurants_debug:
   path: /restaurants_debug
@@ -82,6 +82,24 @@ bikes_search:
   defaults:
       _format: json
       _controller: AppBundle:REST/Bikes:search
+
+bikes_list:
+  path: /bikes_list
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Bikes:list
+
+bikes_detail:
+  path: /bikes_detail
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Bikes:detail
 
 bikes_near_point:
   path: /bikes_near_point
