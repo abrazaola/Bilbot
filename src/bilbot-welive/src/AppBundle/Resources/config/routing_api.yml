@@ -17,7 +17,32 @@ clubs_debug:
       _format: json
       _controller: AppBundle:REST/Clubs:debug
 
+clubs_detail:
+  path: /clubs_detail
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Clubs:detail
 
+clubs_search:
+  path: /clubs_search
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Clubs:search
+
+clubs_list:
+  path: /clubs_list
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Clubs:list
 # Agenda
 agenda_debug:
   path: /agenda_debug

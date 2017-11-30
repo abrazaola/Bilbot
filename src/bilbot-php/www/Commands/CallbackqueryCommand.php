@@ -27,41 +27,9 @@ class CallbackqueryCommand extends SystemCommand
                 'action' => 'bikes_detail',
                 'column' => 'NOMBRE'
             ],
-            'bpr' => [
-                'action' => 'agenda_event',
-                'column' => 'title'
-            ],
-            'bs' => [
-                'action' => 'agenda_event',
-                'column' => 'title'
-            ],
             'clubs' => [
-                'action' => 'agenda_event',
-                'column' => 'title'
-            ],
-            'dbr' => [
-                'action' => 'agenda_event',
-                'column' => 'title'
-            ],
-            'hotels' => [
-                'action' => 'agenda_event',
-                'column' => 'title'
-            ],
-            'nbr' => [
-                'action' => 'agenda_event',
-                'column' => 'title'
-            ],
-            'restaurants' => [
-                'action' => 'agenda_event',
-                'column' => 'title'
-            ],
-            'ta' => [
-                'action' => 'agenda_event',
-                'column' => 'title'
-            ],
-            'to' => [
-                'action' => 'agenda_event',
-                'column' => 'title'
+                'action' => 'clubs_detail',
+                'column' => '_id'
             ]
         ];
 
@@ -86,7 +54,10 @@ class CallbackqueryCommand extends SystemCommand
         )->getBody()->getContents();
         $resWelive = json_decode($resWelive, true);
 
-        if ($resWelive['count'] != 1) {
+        if (
+            (isset($resWelive['count']) && $resWelive['count'] != 1) ||
+            (isset($resWelive['results']) && $resWelive['results']['count'] != 1)
+        ) {
             return Request::sendMessage([
                 'chat_id' => $callback_query->getMessage()->getChat()->getId(),
                 'text' =>
@@ -120,9 +91,17 @@ class CallbackqueryCommand extends SystemCommand
                     'Libres de tipo B: ' . $data['rows'][0]['BLIBRES'] . PHP_EOL .
                     '📍 Mapa => https://www.google.com/maps/?q='.$data['rows'][0]['LATITUD'].','.$data['rows'][0]['LONGITUD'] . PHP_EOL;
                 break;
+            case 'clubs':
+                $answer =
+                    '👥 Se llama ' . $data['rows'][0]['Nombre'] . PHP_EOL .
+                    'está en: ' . $data['rows'][0]['Dirección'] . PHP_EOL .
+                    $data['rows'][0]['Código Postal'] . PHP_EOL .
+                    'Aquí tienes su teléfono ☎️'.$data['rows'][0]['Teléfono'].', y su email 📧 '.$data['rows'][0]['Email'] . PHP_EOL .
+                    'Sus actividades son '.$data['rows'][0]['Actividades'];
+                break;
         }
 
-        return $answer;
+        return $answer . PHP_EOL . PHP_EOL. 'Espero haberte sido de ayuda 😉';
     }
 
     private function decodeData($callback_data, $entityKey)
