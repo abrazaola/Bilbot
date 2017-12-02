@@ -89,6 +89,32 @@ restaurants_debug:
       _format: json
       _controller: AppBundle:REST/Restaurants:debug
 
+restaurants_search:
+  path: /restaurants_search
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Restaurants:search
+
+restaurants_list:
+  path: /restaurants_list
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Restaurants:list
+
+restaurants_detail:
+  path: /restaurants_detail
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Restaurants:detail
 # Bikes
 bikes_debug:
   path: /bikes_debug

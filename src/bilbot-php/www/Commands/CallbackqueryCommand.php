@@ -36,7 +36,11 @@ class CallbackqueryCommand extends SystemCommand
             'hotels' => [
                 'action' => 'hotels_detail',
                 'column' => '_id'
-            ]
+            ],
+            'restaurants' => [
+                'action' => 'restaurants_detail',
+                'column' => '_id'
+            ],
         ];
 
         $entityKey = explode('_', $callback_data, 2);
@@ -140,6 +144,26 @@ class CallbackqueryCommand extends SystemCommand
                     if ($data['rows'][0]['friendlyUrl'] != '') {
                         $url = $data['rows'][0]['friendlyUrl'];
                     }
+                break;
+            case 'restaurants':
+                $answer =
+                    '🍽 ' . $data['rows'][0]['restorationType'] . ' ' . $data['rows'][0]['documentName'] . PHP_EOL .
+                    $data['rows'][0]['documentDescription'] . PHP_EOL .
+                    'Teléfono: ' . $data['rows'][0]['phoneNumber'] . PHP_EOL .
+                    'Email: ' . $data['rows'][0]['email'] . PHP_EOL .
+                    'Web: ' . $data['rows'][0]['web'] . PHP_EOL;
+
+                if ($data['rows'][0]['accessibility'] == '1') {
+                    $answer .= 'Además, cuenta con medios accesibles' . PHP_EOL;
+                }
+
+                if ($data['rows'][0]['michelinStar'] == '1') {
+                    $answer .= 'Tiene al menos una estrella Michelín' . PHP_EOL;
+                }
+
+                if ($data['rows'][0]['friendlyUrl'] != '') {
+                    $url = $data['rows'][0]['friendlyUrl'];
+                }
                 break;
         }
 
