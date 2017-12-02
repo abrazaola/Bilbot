@@ -43,6 +43,8 @@ Prepare the environment:
     ```
     chown -R www-data:www-data /tmp
     ```
+    
+Do the same process with `welive-php` container.
 
 Open Telegram and search the bot `@bilb0_bot` to start a conversation.
 
