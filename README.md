@@ -119,4 +119,4 @@ This project is licensed under the GPL v3 License - see the [LICENSE.md](LICENSE
 
 * [docker-symfony](https://github.com/sskorc/docker-symfony) - Szymon Skórczyński
 * [Example Bot Telegram](https://github.com/php-telegram-bot/example-bot) - PHP Telegram Bot Developers
-* Coffe
+* Coffe & Daft Punk
