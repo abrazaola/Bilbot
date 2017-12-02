@@ -48,6 +48,16 @@ Do the same process with `welive-php` container.
 
 Open Telegram and search the bot `@bilb0_bot` to start a conversation.
 
+### Commands
+
+You can ask to the bot information using the following commands:
+
+* `/agenda` for information about events.
+* `/bicis` for information about bike rental service.
+* `/asociaciones` for information about clubs.
+* `/hoteles` for information about accomodation.
+* `/restaurantes` for information about restaurants.
+
 Get fun with him asking information!
 
 ### If you want to access directly to microservices from your computer update your hosts
