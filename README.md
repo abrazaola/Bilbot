@@ -14,7 +14,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### How to run
 
-This project is fully Dockerized and orchestrated with Docker Compose.
+This project is fully Dockerized and orchestrated with Docker Compose, is mandatory to have previously installed both.
 
 Build the images:
 
