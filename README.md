@@ -1,4 +1,4 @@
-# Bilbot (OUTDATED, Pending review)
+# Bilbot
 
 Design of an extensible chatbots cloud architecture for its application to the improvement of the consumption and the exploitation of public services and data.
 
@@ -44,29 +44,25 @@ Prepare the environment:
     chown -R www-data:www-data /tmp
     ```
 
-### Update your hosts
+Open Telegram and search the bot `@bilb0_bot` to start a conversation.
+
+Get fun with him asking information!
+
+### If you want to access directly to microservices from your computer update your hosts
 
 #### Mac OS X
 
-1. Check Docker Machine IP address: `docker-machine ip dev`.
-
-2. Assuming it's 192.168.99.100, add the following line to your `/etc/hosts` file:
-    ```
-    192.168.99.100 bilbot-watson.dev
-    ```
-
-#### Linux
-
-TBA
+Add the following line to your `/etc/hosts` file:
+```
+127.0.0.1 bilbot.dev
+```
 
 #### Windows
 
-1. Check Docker Machine IP address: `docker-machine ip dev`.
-
-2. Assuming it's 192.168.99.100, add the following line to your `%SystemRoot%\System32\drivers\etc\hosts` file:
-    ```
-    192.168.99.100 bilbot-watson.dev
-    ```
+Add the following line to your `%SystemRoot%\System32\drivers\etc\hosts` file:
+```
+127.0.0.1 bilbot.dev
+```
 
 The web server is constantly querying the Telegram API for new messages sent to Bilbot, for stopping the containers:
 ```
@@ -80,6 +76,14 @@ docker-compose rm
 ```
 
 All the received messages are stored in a MySQL Database which can be accessed in localhost.
+
+## Microservices
+
+| Name | Address | Description|
+| --- | --- | --- |
+| bilbot |bilbot.dev:80 | Contains the Telegram bot API logic and the user commands. |
+| bilbot-watson |bilbot.dev:81 | Contains the Watson API querying logic and is based on Symfony. Contains a testing index page. |
+| bilbot-welive |bilbot.dev:82 | Contains the WeLive API querying logic and is based on Symfony. Contains a testing index page. |
 
 ## Deployment
 
