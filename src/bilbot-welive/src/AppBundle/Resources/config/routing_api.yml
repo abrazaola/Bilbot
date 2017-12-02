@@ -205,6 +205,33 @@ hotels_debug:
       _format: json
       _controller: AppBundle:REST/Hotels:debug
 
+hotels_search:
+  path: /hotels_search
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Hotels:search
+
+hotels_list:
+  path: /hotels_list
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Hotels:list
+
+hotels_detail:
+  path: /hotels_detail
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/Hotels:detail
+
 # Portals
 portals_debug:
   path: /portals_debug

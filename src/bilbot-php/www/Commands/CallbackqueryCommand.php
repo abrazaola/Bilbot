@@ -3,6 +3,8 @@
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
 use Longman\TelegramBot\Commands\SystemCommand;
+use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Request;
 
 
@@ -29,6 +31,10 @@ class CallbackqueryCommand extends SystemCommand
             ],
             'clubs' => [
                 'action' => 'clubs_detail',
+                'column' => '_id'
+            ],
+            'hotels' => [
+                'action' => 'hotels_detail',
                 'column' => '_id'
             ]
         ];
@@ -68,14 +74,29 @@ class CallbackqueryCommand extends SystemCommand
 
         $eventInfoAnswer = $this->buildAnswer($entityKey[0], $resWelive);
 
-        return Request::sendMessage([
-            'chat_id' => $callback_query->getMessage()->getChat()->getId(),
-            'text' => $eventInfoAnswer,
-        ]);
+        if ($eventInfoAnswer['url'] == '') {
+            return Request::sendMessage([
+                'chat_id' => $callback_query->getMessage()->getChat()->getId(),
+                'text' => $eventInfoAnswer['text'],
+            ]);
+        } else {
+            return Request::sendMessage([
+                'chat_id' => $callback_query->getMessage()->getChat()->getId(),
+                'text' => $eventInfoAnswer['text'],
+                'reply_markup' => new InlineKeyboard(
+                        [
+                            new InlineKeyboardButton(
+                                ['text' => 'Más información', 'url' => $eventInfoAnswer['url']]
+                            )
+                        ]
+                )
+            ]);
+        }
     }
 
     private function buildAnswer($entityType, $data) {
         $answer = '';
+        $url = '';
 
         switch ($entityType) {
             case 'agenda':
@@ -100,9 +121,32 @@ class CallbackqueryCommand extends SystemCommand
                     'Aquí tienes su teléfono ☎️'.$data['rows'][0]['Teléfono'].', y su email 📧 '.$data['rows'][0]['Email'] . PHP_EOL .
                     'Sus actividades son '.$data['rows'][0]['Actividades'];
                 break;
+            case 'hotels':
+                $answer =
+                    '🏨 Alojamiento ' . $data['rows'][0]['documentName'] . PHP_EOL .
+                    $data['rows'][0]['turismDescription'] . PHP_EOL .
+                    'Teléfono: ' . $data['rows'][0]['phoneNumber'] . PHP_EOL .
+                    'Email: ' . $data['rows'][0]['email'] . PHP_EOL .
+                    'Web: ' . $data['rows'][0]['web'] . PHP_EOL;
+
+                    if ($data['rows'][0]['accessibility'] == '1') {
+                        $answer .= 'Además, cuenta con medios accesibles' . PHP_EOL;
+                    }
+
+                    if ($data['rows'][0]['qualityQ'] == '1') {
+                        $answer .= 'Le han otorgado la Q de calidad' . PHP_EOL;
+                    }
+
+                    if ($data['rows'][0]['friendlyUrl'] != '') {
+                        $url = $data['rows'][0]['friendlyUrl'];
+                    }
+                break;
         }
 
-        return $answer . PHP_EOL . PHP_EOL. 'Espero haberte sido de ayuda 😉';
+        return [
+            'text' => $answer . PHP_EOL . PHP_EOL. 'Espero haberte sido de ayuda 😉',
+            'url' => $url
+        ];
     }
 
     private function decodeData($callback_data, $entityKey)
