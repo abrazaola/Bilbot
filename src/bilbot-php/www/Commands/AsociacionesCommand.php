@@ -126,9 +126,11 @@ class AsociacionesCommand extends UserCommand
             $resWelive = $this->sendToWeLive(self::WELIVE_LIST_METHOD);
         }
 
-        var_dump($resWelive);
+        if (isset($resWelive['results'])) {
+            $resWelive = $resWelive['results'];
+        }
 
-        if ($resWelive['results']['count'] == 0) {
+        if ($resWelive['count'] == 0) {
             $data = [
                 'chat_id' => $chatId,
                 'text' => $fallbackMessage,
@@ -143,7 +145,7 @@ class AsociacionesCommand extends UserCommand
 
             $answerButtons = [];
 
-            foreach ($resWelive['results']['rows'] as $row) {
+            foreach ($resWelive['rows'] as $row) {
                 $answerButtons[] = [new InlineKeyboardButton([
                     'text' => '👥 ' . $row['Nombre'],
                     'callback_data' => $this->encodeData($row['_id'])

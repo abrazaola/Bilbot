@@ -43,8 +43,9 @@ class BicisCommand extends UserCommand
         $genericKeywords = [
             'bici','bicis',
             'bicicleta', 'bicicletas',
-            'recoger', 'recojemos', 'recojo',
+            'recoger', 'recojemos', 'recojo', 'recogida',
             'encontrar',
+            'punto', 'puntos',
             'alquilar',
             'cerca'
         ];

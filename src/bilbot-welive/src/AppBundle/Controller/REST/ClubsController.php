@@ -53,13 +53,14 @@ class ClubsController extends FOSRestController
             ->query(
                 self::DATASET,
                 self::RESOURCE,
-                "select _id, Nombre, Dirección, Teléfono, Email, Actividades, Sector de población, Ámbito de actuación 
+                "select _id, Nombre, Actividades, `Sector de población`, `Ámbito de actuación` 
                   from results 
                   where 
                   Nombre LIKE '%".$keyword."%' OR 
-                  Sector de población LIKE '%".$keyword."%' OR 
-                  Ámbito de actuación LIKE '%".$keyword."%' OR 
-                  Actividades LIKE '%".$keyword."%';"
+                  `Sector de población` LIKE '%".$keyword."%' OR 
+                  `Ámbito de actuación` LIKE '%".$keyword."%' OR 
+                  Actividades LIKE '%".$keyword."%'
+                  limit 10;"
             );
 
         return new JsonResponse($res, 200);

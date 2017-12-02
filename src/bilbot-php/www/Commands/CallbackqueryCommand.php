@@ -54,10 +54,11 @@ class CallbackqueryCommand extends SystemCommand
         )->getBody()->getContents();
         $resWelive = json_decode($resWelive, true);
 
-        if (
-            (isset($resWelive['count']) && $resWelive['count'] != 1) ||
-            (isset($resWelive['results']) && $resWelive['results']['count'] != 1)
-        ) {
+        if (isset($resWelive['results'])) {
+            $resWelive = $resWelive['results'];
+        }
+
+        if ($resWelive['count'] != 1) {
             return Request::sendMessage([
                 'chat_id' => $callback_query->getMessage()->getChat()->getId(),
                 'text' =>
