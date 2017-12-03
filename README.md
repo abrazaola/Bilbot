@@ -16,6 +16,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 This project is fully Dockerized and orchestrated with Docker Compose, is mandatory to have previously installed both.
 
+Create your version of `src/bilbot-php/www/Constants.php.dist` without the `.dist` extension and your API keys.
+
 Build the images:
 
 ```
