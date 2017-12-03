@@ -87,7 +87,7 @@ class HotelsController extends FOSRestController
             ->query(
                 self::DATASET,
                 self::RESOURCE,
-                "select _id, documentName, municipality, qualityQ, qualityAssurance 
+                "select _id, documentName, municipality, qualityQ, qualityAssurance, lodgingType 
                   from rootTable
                   where 
                   municipality = 'BILBAO' AND 

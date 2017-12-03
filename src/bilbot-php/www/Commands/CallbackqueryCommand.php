@@ -41,6 +41,10 @@ class CallbackqueryCommand extends SystemCommand
                 'action' => 'restaurants_detail',
                 'column' => '_id'
             ],
+            'attractions' => [
+                'action' => 'tourist_attractions_detail',
+                'column' => '_id'
+            ],
         ];
 
         $entityKey = explode('_', $callback_data, 2);
@@ -82,11 +86,13 @@ class CallbackqueryCommand extends SystemCommand
             return Request::sendMessage([
                 'chat_id' => $callback_query->getMessage()->getChat()->getId(),
                 'text' => $eventInfoAnswer['text'],
+                'parse_mode' => 'html'
             ]);
         } else {
             return Request::sendMessage([
                 'chat_id' => $callback_query->getMessage()->getChat()->getId(),
                 'text' => $eventInfoAnswer['text'],
+                'parse_mode' => 'html',
                 'reply_markup' => new InlineKeyboard(
                         [
                             new InlineKeyboardButton(
@@ -127,18 +133,18 @@ class CallbackqueryCommand extends SystemCommand
                 break;
             case 'hotels':
                 $answer =
-                    '🏨 Alojamiento ' . $data['rows'][0]['documentName'] . PHP_EOL .
-                    $data['rows'][0]['turismDescription'] . PHP_EOL .
-                    'Teléfono: ' . $data['rows'][0]['phoneNumber'] . PHP_EOL .
+                    '🏨 ' . $data['rows'][0]['documentName'] . ' (' . $data['rows'][0]['lodgingType'] . ')' . PHP_EOL .
+                    PHP_EOL . $data['rows'][0]['turismDescription'] . PHP_EOL .
+                    PHP_EOL . 'Teléfono: ' . $data['rows'][0]['phoneNumber'] . PHP_EOL .
                     'Email: ' . $data['rows'][0]['email'] . PHP_EOL .
                     'Web: ' . $data['rows'][0]['web'] . PHP_EOL;
 
                     if ($data['rows'][0]['accessibility'] == '1') {
-                        $answer .= 'Además, cuenta con medios accesibles' . PHP_EOL;
+                        $answer .= PHP_EOL .'Además, cuenta con medios accesibles' . PHP_EOL;
                     }
 
                     if ($data['rows'][0]['qualityQ'] == '1') {
-                        $answer .= 'Le han otorgado la Q de calidad' . PHP_EOL;
+                        $answer .= PHP_EOL .'🏆 Le han otorgado la Q de calidad' . PHP_EOL;
                     }
 
                     if ($data['rows'][0]['friendlyUrl'] != '') {
@@ -148,22 +154,29 @@ class CallbackqueryCommand extends SystemCommand
             case 'restaurants':
                 $answer =
                     '🍽 ' . $data['rows'][0]['restorationType'] . ' ' . $data['rows'][0]['documentName'] . PHP_EOL .
-                    $data['rows'][0]['documentDescription'] . PHP_EOL .
-                    'Teléfono: ' . $data['rows'][0]['phoneNumber'] . PHP_EOL .
+                    PHP_EOL .$data['rows'][0]['documentDescription'] . PHP_EOL .
+                    PHP_EOL .'Teléfono: ' . $data['rows'][0]['phoneNumber'] . PHP_EOL .
                     'Email: ' . $data['rows'][0]['email'] . PHP_EOL .
                     'Web: ' . $data['rows'][0]['web'] . PHP_EOL;
 
                 if ($data['rows'][0]['accessibility'] == '1') {
-                    $answer .= 'Además, cuenta con medios accesibles' . PHP_EOL;
+                    $answer .= PHP_EOL .'Además, cuenta con medios accesibles' . PHP_EOL;
                 }
 
                 if ($data['rows'][0]['michelinStar'] == '1') {
-                    $answer .= 'Tiene al menos una estrella Michelín' . PHP_EOL;
+                    $answer .= PHP_EOL .'🏅 Tiene al menos una estrella Michelín' . PHP_EOL;
                 }
 
                 if ($data['rows'][0]['friendlyUrl'] != '') {
                     $url = $data['rows'][0]['friendlyUrl'];
                 }
+                break;
+            case 'attractions':
+                $answer =
+                    '🗺 ' . $data['rows'][0]['NOMBRE_LUGAR_CAS'] . PHP_EOL .
+                    'es de tipo ' . $data['rows'][0]['NOMBRE_FAMILIA'] . PHP_EOL .
+                    'y se encuentra en ' . $data['rows'][0]['NOMBRE_TIPO_VIA'] . ' ' . $data['rows'][0]['NOMBRE_CALLE'] . ' ' . $data['rows'][0]['NUMERO'] . ' ' . $data['rows'][0]['BLOQUE'] . PHP_EOL .
+                    '📍 Mapa => https://www.google.com/maps/?q='.$data['rows'][0]['COORDENADA_UTM_X'].','.$data['rows'][0]['COORDENADA_UTM_Y'] . PHP_EOL;
                 break;
         }
 

@@ -10,25 +10,25 @@ use Longman\TelegramBot\Request;
 use ReflectionClass;
 
 /**
- * User "/hoteles" command
+ * User "/atracciones" command
  *
- * Returns information about Bilbao's hostals and hotels
+ * Returns information about Bilbao's tourist attractions
  */
-class HotelesCommand extends UserCommand
+class AtraccionesCommand extends UserCommand
 {
-    protected $name = 'hoteles';
-    protected $description = 'Información sobre los hoteles y hostales de la ciudad';
-    protected $usage = '/hoteles <texto>';
+    protected $name = 'atracciones';
+    protected $description = 'Información sobre atracciones turísticas de la ciudad';
+    protected $usage = '/atracciones <texto>';
     protected $version = '0.1.0';
 
     const RELEVANCE_THRESHOLD = 0.85;
     const NEGATIVENESS_THRESHOLD = -1;
 
-    const WELIVE_SEARCH_METHOD = 'hotels_search';
-    const WELIVE_LIST_METHOD = 'hotels_list';
+    const WELIVE_SEARCH_METHOD = 'tourist_attractions_search';
+    const WELIVE_LIST_METHOD = 'tourist_attractions_list';
 
     const DATA_LENGTH = 24;
-    const DATA_PREFIX = 'hotels_';
+    const DATA_PREFIX = 'attractions_';
 
     public function execute()
     {
@@ -41,20 +41,16 @@ class HotelesCommand extends UserCommand
         $answerMessage = $fallbackMessage;
 
         $genericKeywords = [
-            'hotel','hoteles',
-            'pension', 'pensión', 'pensiones',
-            'hostal', 'hostales',
-            'dormir',
+            'ver',
+            'visitar',
+            'turismo',
+            'conocer',
         ];
 
         $specificKeywords = [
-            'levante',
-            'abando',
-            'arriaga',
-            'rekalde',
-            'corazon', 'corazón',
-            'indautxu',
-            'bolueta',
+            'museo', 'museos',
+            'edificio', 'edificios',
+            'arquitectura',
         ];
 
         if ($incomingMessage === '') {
@@ -151,7 +147,7 @@ class HotelesCommand extends UserCommand
 
             foreach ($resWelive['rows'] as $row) {
                 $answerButtons[] = [new InlineKeyboardButton([
-                    'text' => '🏨 ' . $row['documentName'] . ' (' . $row['lodgingType'] . ')' . PHP_EOL,
+                    'text' => '🗺 ' . $row['NOMBRE_LUGAR_CAS'],
                     'callback_data' => $this->encodeData($row['_id'])
                 ])];
             }

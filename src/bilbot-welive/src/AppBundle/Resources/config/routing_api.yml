@@ -221,6 +221,33 @@ tourist_attractions_debug:
       _format: json
       _controller: AppBundle:REST/TouristAttractions:debug
 
+tourist_attractions_search:
+  path: /tourist_attractions_search
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/TouristAttractions:search
+
+tourist_attractions_list:
+  path: /tourist_attractions_list
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/TouristAttractions:list
+
+tourist_attractions_detail:
+  path: /tourist_attractions_detail
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/TouristAttractions:detail
+
 # Hotels
 hotels_debug:
   path: /hotels_debug
