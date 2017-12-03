@@ -2,6 +2,9 @@
 
 Design of an extensible chatbots cloud architecture for its application to the improvement of the consumption and the exploitation of public services and data.
 
+## Screenshots
+![Welcome message](img/start.png) ![Agenda command](img/agenda.png) ![Bikes command](img/bicis.png) ![Restaurants command](img/restaurantes.png)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
