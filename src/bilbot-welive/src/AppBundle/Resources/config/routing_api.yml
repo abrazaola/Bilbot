@@ -79,6 +79,7 @@ agenda_detail:
   defaults:
       _format: json
       _controller: AppBundle:REST/Agenda:detail
+
 # Restaurants
 restaurants_debug:
   path: /restaurants_debug
@@ -115,6 +116,7 @@ restaurants_detail:
   defaults:
       _format: json
       _controller: AppBundle:REST/Restaurants:detail
+
 # Bikes
 bikes_debug:
   path: /bikes_debug
@@ -160,46 +162,6 @@ bikes_near_point:
   defaults:
       _format: json
       _controller: AppBundle:REST/Bikes:nearPoint
-
-# Buses per route
-buses_per_route_debug:
-  path: /buses_per_route_debug
-  methods: [GET]
-  requirements:
-      _format: json
-  defaults:
-      _format: json
-      _controller: AppBundle:REST/BusesPerRoute:debug
-
-# Bus stops
-bus_stops_debug:
-  path: /bus_stops_debug
-  methods: [GET]
-  requirements:
-      _format: json
-  defaults:
-      _format: json
-      _controller: AppBundle:REST/BusStops:debug
-
-# Nightly bus routes
-nightly_bus_routes_debug:
-  path: /nightly_bus_routes_debug
-  methods: [GET]
-  requirements:
-      _format: json
-  defaults:
-      _format: json
-      _controller: AppBundle:REST/NightlyBusRoutes:debug
-
-# Daily bus routes
-daily_bus_routes_debug:
-  path: /daily_bus_routes_debug
-  methods: [GET]
-  requirements:
-      _format: json
-  defaults:
-      _format: json
-      _controller: AppBundle:REST/DailyBusRoutes:debug
 
 # Tourist Offices
 tourist_offices_debug:
@@ -284,13 +246,3 @@ hotels_detail:
   defaults:
       _format: json
       _controller: AppBundle:REST/Hotels:detail
-
-# Portals
-portals_debug:
-  path: /portals_debug
-  methods: [GET]
-  requirements:
-      _format: json
-  defaults:
-      _format: json
-      _controller: AppBundle:REST/Portals:debug
