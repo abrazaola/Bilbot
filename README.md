@@ -4,6 +4,7 @@ Design of an extensible chatbots cloud architecture for its application to the i
 
 ## Screenshots
 ![Welcome message](img/start.png) ![Agenda command](img/agenda.png) ![Bikes command](img/bicis.png) ![Restaurants command](img/restaurantes.png)
+   
 
 ## Getting Started
 
