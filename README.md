@@ -108,6 +108,20 @@ For deploying a new version in dev:
 cap dev deploy
 ```
 
+### How to add a new command
+
+1. Create a new Controller with all the needed queries to the dataset inside of `src/bilbot-welive/src/AppBundle/Controller/REST`
+    1. Create at least 3 types of queries `listAction`, `detailAction` and `searchAction` for making easier the interaction with the bot
+1. Add the routing for the actions inside of `src/bilbot-welive/src/AppBundle/Resources/config/routing_api.yml` following the naming convention `{dataType}_{action_name}`
+1. Create a new command file in `src/bilbot-php/www/Commands` with the name `{CommandNameCommand.php}` is highly recommended to duplicate an existing one and changing the name of the class within
+1. Change the class properties `$name`, `$description`, `$usage` and the constants `WELIVE_SEARCH_METHOD`, `WELIVE_LIST_METHOD` and `DATA_PREFIX`, please note that these are the route slugs created in step 2. `DATA_PREFIX` is recommended to be one word with a trailing underscore (_) should be descriptive of the type of data, this will be used by the `CallbackqueryCommand.php` for handling the origin of the callbacks.
+1. Customize the button text representation within `search` function and the data column to be represented as title.
+1. Add the data prefix without the trailing underscore to the `$entities` associative array in `CallbackqueryCommand.php` with the subkeys `action` to represent the detail route slug created in step 2 and `column` for the column that will be used as primary key for the search, it must be consistent with the argument that will receive the detail action in the controller.
+1. Add a new switch clause in the function `buildAnswer` using the data prefix without trailing underscore with the text that will be rendered as answer to the user.
+1. Add the new file command path to  `src/bilbot-php/www/init.php`
+1. Restart docker containers with `docker-compose down && docker-compose up`
+1. Text BotFather in Telegram to update the user visible command list
+
 ## Built With
 
 * [PHP Telegram Bot](https://github.com/php-telegram-bot) - A Telegram bot framework in PHP
