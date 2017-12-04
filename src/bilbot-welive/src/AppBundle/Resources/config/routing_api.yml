@@ -173,6 +173,33 @@ tourist_offices_debug:
       _format: json
       _controller: AppBundle:REST/TouristOffices:debug
 
+tourist_offices_search:
+  path: /tourist_offices_search
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/TouristOffices:search
+
+tourist_offices_list:
+  path: /tourist_offices_list
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/TouristOffices:list
+
+tourist_offices_detail:
+  path: /tourist_offices_detail
+  methods: [GET]
+  requirements:
+      _format: json
+  defaults:
+      _format: json
+      _controller: AppBundle:REST/TouristOffices:detail
+
 # Tourist attractions
 tourist_attractions_debug:
   path: /tourist_attractions_debug

@@ -45,6 +45,10 @@ class CallbackqueryCommand extends SystemCommand
                 'action' => 'tourist_attractions_detail',
                 'column' => '_id'
             ],
+            'tourist' => [
+                'action' => 'tourist_offices_detail',
+                'column' => '_id'
+            ],
         ];
 
         $entityKey = explode('_', $callback_data, 2);
@@ -177,6 +181,18 @@ class CallbackqueryCommand extends SystemCommand
                     'es de tipo ' . $data['rows'][0]['NOMBRE_FAMILIA'] . PHP_EOL .
                     'y se encuentra en ' . $data['rows'][0]['NOMBRE_TIPO_VIA'] . ' ' . $data['rows'][0]['NOMBRE_CALLE'] . ' ' . $data['rows'][0]['NUMERO'] . ' ' . $data['rows'][0]['BLOQUE'] . PHP_EOL .
                     '📍 Mapa => https://www.google.com/maps/?q='.$data['rows'][0]['COORDENADA_UTM_X'].','.$data['rows'][0]['COORDENADA_UTM_Y'] . PHP_EOL;
+                break;
+            case 'tourist':
+                $answer =
+                    'ℹ️ ' . $data['rows'][0]['documentName'] . PHP_EOL .
+                    $data['rows'][0]['documentDescription'] . PHP_EOL .
+                    'Email: ' . $data['rows'][0]['email'] . PHP_EOL .
+                    'su teléfono es: ' . $data['rows'][0]['phoneNumber'] . PHP_EOL .
+                    '📍 Mapa => https://www.google.com/maps/?q='.$data['rows'][0]['latitudelongitude'] . PHP_EOL;
+
+                    if ($data['rows'][0]['friendlyUrl'] != '') {
+                        $url = $data['rows'][0]['friendlyUrl'];
+                    }
                 break;
         }
 

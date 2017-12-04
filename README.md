@@ -64,6 +64,7 @@ You can ask to the bot information using the following commands:
 * `/hoteles` for information about accomodation.
 * `/restaurantes` for information about restaurants.
 * `/atracciones` for information about tourist attractions.
+* `/turismo` for information about tourist offices.
 
 Get fun with him asking information!
 

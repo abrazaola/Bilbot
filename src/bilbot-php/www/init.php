@@ -10,6 +10,7 @@ require_once('Commands/AsociacionesCommand.php');
 require_once('Commands/HotelesCommand.php');
 require_once('Commands/RestaurantesCommand.php');
 require_once('Commands/AtraccionesCommand.php');
+require_once('Commands/TurismoCommand.php');
 
 require_once('Commands/CallbackqueryCommand.php');
 require_once('Constants.php');

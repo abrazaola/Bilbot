@@ -63,7 +63,7 @@ class TouristAttractionsController extends FOSRestController
     }
 
     public function detailAction(Request $request) {
-        $restaurantId = $request->query->get('_id');
+        $attractionId = $request->query->get('_id');
 
         $res = $this
             ->get('welive_api_consumer')
@@ -73,7 +73,7 @@ class TouristAttractionsController extends FOSRestController
                 "select _id, NOMBRE_FAMILIA, NOMBRE_LUGAR_CAS, NOMBRE_TIPO_VIA, NOMBRE_CALLE, BLOQUE, NUMERO, BIS, COORDENADA_UTM_X, COORDENADA_UTM_Y 
                   from results 
                   where 
-                  _id = " . $restaurantId . ";"
+                  _id = " . $attractionId . ";"
             );
 
         return new JsonResponse($res, 200);
