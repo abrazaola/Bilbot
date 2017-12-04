@@ -146,10 +146,12 @@ class AtraccionesCommand extends UserCommand
             $answerButtons = [];
 
             foreach ($resWelive['rows'] as $row) {
-                $answerButtons[] = [new InlineKeyboardButton([
-                    'text' => '🗺 ' . $row['NOMBRE_LUGAR_CAS'],
-                    'callback_data' => $this->encodeData($row['_id'])
-                ])];
+                if ($row['NOMBRE_LUGAR_CAS'] != '') {
+                    $answerButtons[] = [new InlineKeyboardButton([
+                        'text' => '🗺 ' . $row['NOMBRE_LUGAR_CAS'],
+                        'callback_data' => $this->encodeData($row['_id'])
+                    ])];
+                }
             }
 
             $reflect = new ReflectionClass(InlineKeyboard::class);
