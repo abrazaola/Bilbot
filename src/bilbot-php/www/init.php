@@ -16,5 +16,6 @@ require_once('Commands/CallbackqueryCommand.php');
 require_once('Constants.php');
 require_once('GetUpdatesDaemon.php');
 require_once('PhraseRandomizer.php');
+require_once('CommandsHelper.php');
 
 new Bilbot\GetUpdatesDaemon();

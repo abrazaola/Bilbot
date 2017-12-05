@@ -2,6 +2,7 @@
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
+use Bilbot\CommandsHelper;
 use Bilbot\Constants;
 use Bilbot\PhraseRandomizer;
 use Exception;
@@ -68,8 +69,8 @@ class RestaurantesCommand extends UserCommand
 
         try {
             Request::sendChatAction(['chat_id' => $chat_id, 'action' => 'typing']);
-            $resWatson = $this->sendToWatson($incomingMessage);
-            $emotionPrefix = $this->getEmotionPrefix($resWatson);
+            $resWatson = CommandsHelper::sendToWatson($incomingMessage);
+            $emotionPrefix = CommandsHelper::getEmotionPrefix($resWatson);
 
 
             foreach ($specificKeywords as $keyword) {
@@ -111,10 +112,12 @@ class RestaurantesCommand extends UserCommand
 
     private function search($keyword, $emotionPrefix, $fallbackMessage, $chatId, $withTerm = false)
     {
+        $keyword = CommandsHelper::singularize($keyword);
+
         if ($withTerm) {
-            $resWelive = $this->sendToWeLive(self::WELIVE_SEARCH_METHOD, $keyword);
+            $resWelive = CommandsHelper::sendToWeLive(self::WELIVE_SEARCH_METHOD, $keyword);
         } else {
-            $resWelive = $this->sendToWeLive(self::WELIVE_LIST_METHOD);
+            $resWelive = CommandsHelper::sendToWeLive(self::WELIVE_LIST_METHOD);
         }
 
         if ($resWelive['count'] == 0) {
@@ -145,7 +148,7 @@ class RestaurantesCommand extends UserCommand
         foreach ($resWelive['rows'] as $row) {
             $answerButtons[] = [new InlineKeyboardButton([
                 'text' => '🍽 ' . $row['restorationType'] . ' ' .$row['documentName'],
-                'callback_data' => $this->encodeData($row['_id'])
+                'callback_data' => CommandsHelper::encodeData($row['_id'], self::DATA_PREFIX, self::DATA_LENGTH)
             ])];
         }
 
@@ -159,66 +162,5 @@ class RestaurantesCommand extends UserCommand
         ];
 
         return $data;
-    }
-
-    private function sendToWatson($incomingMessage)
-    {
-        $clientWatson = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WATSON_API_ENDPOINT]);
-        $resWatson = $clientWatson->get(
-            'understandme',
-            ['query' => ['text' => $incomingMessage]]
-        )->getBody()->getContents();
-
-        $resWatson = json_decode($resWatson, true);
-
-        return $resWatson;
-    }
-
-    private function sendToWeLive($method, $keyword = false)
-    {
-        $clientWelive = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WELIVE_API_ENDPOINT]);
-
-        if ($keyword == false) {
-            $resWelive = $clientWelive->get(
-                $method
-            )->getBody()->getContents();
-        } else {
-            $resWelive = $clientWelive->get(
-                $method,
-                [
-                    'query' => [
-                        'term' => $keyword,
-                    ]
-                ]
-            )->getBody()->getContents();
-        }
-
-        $resWelive = json_decode($resWelive, true);
-
-        return $resWelive;
-    }
-
-    private function getEmotionPrefix($resWatson)
-    {
-        $emotionPrefix = PhraseRandomizer::getRandomPhrase(Constants::PHRASE_EMOTION_NEUTRAL);
-
-        if (
-            $resWatson['analysis']['sentiment']['document']['label'] == 'negative'
-        ) {
-            $emotionPrefix = PhraseRandomizer::getRandomPhrase(Constants::PHRASE_EMOTION_NEGATIVE);
-        }
-
-        if (
-            $resWatson['analysis']['sentiment']['document']['label'] == 'positive'
-        ) {
-            $emotionPrefix = PhraseRandomizer::getRandomPhrase(Constants::PHRASE_EMOTION_POSITIVE);
-        }
-
-        return $emotionPrefix;
-    }
-
-    private function encodeData($title)
-    {
-        return self::DATA_PREFIX . base64_encode(substr($title, 0, self::DATA_LENGTH));
     }
 }
