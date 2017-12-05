@@ -2,6 +2,8 @@
 
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
+use Bilbot\Constants;
+use Bilbot\PhraseRandomizer;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
@@ -13,23 +15,6 @@ class CallbackqueryCommand extends SystemCommand
     protected $name = 'callback';
     protected $description = 'Reply to callback query';
     protected $version = '1.0.0';
-
-    const PHRASE_ERROR = 'error';
-    const PHRASE_GREETING = 'greeting';
-
-    private $phrases = [
-        self::PHRASE_ERROR => [
-            '😣 ¡Ups! Ha habido un problema y no puedo mostrarte esta información, ¿puedes probar en otro momento?',
-            '😕 Vaya... algo ha salido mal, ¿puedes intentarlo más tarde?',
-            '😟 Vaya... algo no está como debería, juraría que esto antes funcionaba, ¿puedes probar luego? ',
-            '😖 ¡Ains! Esto es embarazoso, algo ha salido mal, ¿puedes probar más tarde?',
-        ],
-        self::PHRASE_GREETING => [
-            'Espero haberte sido de ayuda 😉',
-            'Siempre a tu servicio 😀',
-            '¡Gracias por confiar en mí! ¡Espero haberte sido útil! 😁',
-        ]
-    ];
 
     public function execute()
     {
@@ -97,7 +82,7 @@ class CallbackqueryCommand extends SystemCommand
             return Request::sendMessage([
                 'chat_id' => $callback_query->getMessage()->getChat()->getId(),
                 'text' =>
-                    $this->getPhrase(self::PHRASE_ERROR),
+                    PhraseRandomizer::getRandomPhrase(Constants::PHRASE_ERROR),
             ]);
         }
 
@@ -113,7 +98,6 @@ class CallbackqueryCommand extends SystemCommand
             return Request::sendMessage([
                 'chat_id' => $callback_query->getMessage()->getChat()->getId(),
                 'text' => $eventInfoAnswer['text'],
-                'parse_mode' => 'html',
                 'reply_markup' => new InlineKeyboard(
                         [
                             new InlineKeyboardButton(
@@ -260,7 +244,7 @@ class CallbackqueryCommand extends SystemCommand
         }
 
         return [
-            'text' => $answer . PHP_EOL . $this->getPhrase(self::PHRASE_GREETING),
+            'text' => $answer . PHP_EOL . PhraseRandomizer::getRandomPhrase(Constants::PHRASE_GREETING),
             'url' => $url
         ];
     }
@@ -270,10 +254,5 @@ class CallbackqueryCommand extends SystemCommand
         $title = base64_decode(substr($callback_data, strlen($entityKey[0] . '_')));
 
         return $title;
-    }
-
-    private function getPhrase($type) {
-
-        return $this->phrases[$type][array_rand($this->phrases[$type])];
     }
 }

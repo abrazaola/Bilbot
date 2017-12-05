@@ -2,11 +2,14 @@
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
+use Bilbot\Constants;
+use Bilbot\PhraseRandomizer;
 use Exception;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Request;
+use Longman\TelegramBot\TelegramLog;
 use ReflectionClass;
 
 /**
@@ -36,7 +39,7 @@ class HotelesCommand extends UserCommand
         $chat_id = $message->getChat()->getId();
         $incomingMessage = str_replace(['¿', '?', '¡', '!', '+'], '', trim($message->getText(true)));
         $incomingMessageWords = explode(" ", strtolower($incomingMessage));
-        $fallbackMessage = '😣 Lo siento, pero no he encuentro información relevante. ¿Puedes probar a preguntármelo de otro modo?';
+        $fallbackMessage = PhraseRandomizer::getRandomPhrase(Constants::PHRASE_FALLBACK);
 
         $answerMessage = $fallbackMessage;
 
@@ -73,22 +76,6 @@ class HotelesCommand extends UserCommand
             $resWatson = $this->sendToWatson($incomingMessage);
             $emotionPrefix = $this->getEmotionPrefix($resWatson);
 
-            foreach ($resWatson['analysis']['concepts'] as $concept) {
-                if ($concept['text'] == 'Fin de semana' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
-                    $answerMessage = 'Estás hablando sobre ' . $concept['text'];
-                    break;
-                }
-
-                if ($concept['text'] == 'Semana laboral' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
-                    $answerMessage = 'Estás hablando sobre ' . $concept['text'];
-                    break;
-                }
-
-                if ($concept['text'] == 'Tarde' && $concept['relevance'] > self::RELEVANCE_THRESHOLD) {
-                    $answerMessage = 'Estás hablando sobre ' . $concept['text'];
-                    break;
-                }
-            }
 
             foreach ($specificKeywords as $keyword) {
                 if (in_array($keyword, $incomingMessageWords)) {
@@ -115,7 +102,8 @@ class HotelesCommand extends UserCommand
 
             return Request::sendMessage($data);
         } catch (Exception $e) {
-            $answerMessage = '😕 Necesito una frase más larga: ' . PHP_EOL . json_encode(['error' => $e->getMessage()]);
+            $answerMessage = PhraseRandomizer::getRandomPhrase(Constants::PHRASE_LONGER);
+            TelegramLog::error($e);
         }
 
         $data = [
@@ -139,32 +127,40 @@ class HotelesCommand extends UserCommand
                 'chat_id' => $chatId,
                 'text' => $fallbackMessage,
             ];
-        } else {
+
+            return $data;
+        }
+
+        $answerMessage =
+            $emotionPrefix .
+            PhraseRandomizer::getRandomPhrase(Constants::PHRASE_RESULTS_FOUND) .
+            PHP_EOL;
+
+        if ($withTerm) {
             $answerMessage =
                 $emotionPrefix .
-                'Con respecto a ' .
+                PhraseRandomizer::getRandomPhrase(Constants::PHRASE_RESULTS_SPECIFIC_CONNECTOR) .
                 $keyword .
-                ', aquí tienes lo que he encontrado' .
+                PhraseRandomizer::getRandomPhrase(Constants::PHRASE_RESULTS_SPECIFIC_FOUND) .
                 PHP_EOL;
-
-            $answerButtons = [];
-
-            foreach ($resWelive['rows'] as $row) {
-                $answerButtons[] = [new InlineKeyboardButton([
-                    'text' => '🏨 ' . $row['documentName'] . ' (' . $row['lodgingType'] . ')' . PHP_EOL,
-                    'callback_data' => $this->encodeData($row['_id'])
-                ])];
-            }
-
-            $reflect = new ReflectionClass(InlineKeyboard::class);
-            $keyboard = $reflect->newInstanceArgs($answerButtons);
-
-            $data = [
-                'chat_id' => $chatId,
-                'text' => $answerMessage,
-                'reply_markup' => $keyboard,
-            ];
         }
+
+        $answerButtons = [];
+        foreach ($resWelive['rows'] as $row) {
+            $answerButtons[] = [new InlineKeyboardButton([
+                'text' => '🏨 ' . $row['documentName'] . ' (' . $row['lodgingType'] . ')' . PHP_EOL,
+                'callback_data' => $this->encodeData($row['_id'])
+            ])];
+        }
+
+        $reflect = new ReflectionClass(InlineKeyboard::class);
+        $keyboard = $reflect->newInstanceArgs($answerButtons);
+
+        $data = [
+            'chat_id' => $chatId,
+            'text' => $answerMessage,
+            'reply_markup' => $keyboard,
+        ];
 
         return $data;
     }
@@ -208,18 +204,18 @@ class HotelesCommand extends UserCommand
 
     private function getEmotionPrefix($resWatson)
     {
-        $emotionPrefix = '';
+        $emotionPrefix = PhraseRandomizer::getRandomPhrase(Constants::PHRASE_EMOTION_NEUTRAL);
 
         if (
             $resWatson['analysis']['sentiment']['document']['label'] == 'negative'
         ) {
-            $emotionPrefix = '😔 Lo siento, solo soy un bot... ';
+            $emotionPrefix = PhraseRandomizer::getRandomPhrase(Constants::PHRASE_EMOTION_NEGATIVE);
         }
 
         if (
             $resWatson['analysis']['sentiment']['document']['label'] == 'positive'
         ) {
-            $emotionPrefix = '😃 ¡Buenas noticias! ';
+            $emotionPrefix = PhraseRandomizer::getRandomPhrase(Constants::PHRASE_EMOTION_POSITIVE);
         }
 
         return $emotionPrefix;

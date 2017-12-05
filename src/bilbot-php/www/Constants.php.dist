@@ -21,4 +21,18 @@ class Constants
     const MYSQL_USER = '';
     const MYSQL_PASSWORD = '';
     const MYSQL_DATABASE = 'bilbot';
+
+    const PHRASE_FALLBACK = 'fallback';
+    const PHRASE_LONGER = 'longer_phrases';
+    const PHRASE_EMOTION_POSITIVE = 'emotion_positive';
+    const PHRASE_EMOTION_NEGATIVE = 'emotion_negative';
+    const PHRASE_EMOTION_NEUTRAL = 'emotion_neutral';
+    const PHRASE_RESULTS_FOUND = 'results_found';
+    const PHRASE_RESULTS_SPECIFIC_FOUND = 'result_specific_found';
+    const PHRASE_RESULTS_SPECIFIC_CONNECTOR = 'result_specific_connector';
+    const PHRASE_ERROR = 'error';
+    const PHRASE_GREETING = 'greeting';
+
+    const RELEVANCE_THRESHOLD = 0.85;
+    const NEGATIVENESS_THRESHOLD = -1;
 }
