@@ -7,11 +7,8 @@ use Bilbot\Constants;
 use Bilbot\PhraseRandomizer;
 use Exception;
 use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Entities\InlineKeyboard;
-use Longman\TelegramBot\Entities\InlineKeyboardButton;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\TelegramLog;
-use ReflectionClass;
 
 /**
  * User "/atracciones" command
@@ -77,7 +74,20 @@ class AtraccionesCommand extends UserCommand
             foreach ($specificKeywords as $keyword) {
                 if (in_array($keyword, $incomingMessageWords)) {
                     Request::sendChatAction(['chat_id' => $chat_id, 'action' => 'typing']);
-                    $data = $this->search($keyword, $emotionPrefix, $fallbackMessage, $chat_id, true);
+                    $data = CommandsHelper::search(
+                        $keyword,
+                        $emotionPrefix,
+                        $fallbackMessage,
+                        $chat_id,
+                        self::WELIVE_SEARCH_METHOD,
+                        self::WELIVE_LIST_METHOD,
+                        self::DATA_PREFIX,
+                        self::DATA_LENGTH,
+                        '🗺',
+                        'NOMBRE_LUGAR_CAS',
+                        '_id',
+                        true
+                    );
 
                     return Request::sendMessage($data);
                 }
@@ -86,7 +96,20 @@ class AtraccionesCommand extends UserCommand
             foreach ($genericKeywords as $keyword) {
                 if (in_array($keyword, $incomingMessageWords)) {
                     Request::sendChatAction(['chat_id' => $chat_id, 'action' => 'typing']);
-                    $data = $this->search($keyword, $emotionPrefix, $fallbackMessage, $chat_id, false);
+                    $data = CommandsHelper::search(
+                        $keyword,
+                        $emotionPrefix,
+                        $fallbackMessage,
+                        $chat_id,
+                        self::WELIVE_SEARCH_METHOD,
+                        self::WELIVE_LIST_METHOD,
+                        self::DATA_PREFIX,
+                        self::DATA_LENGTH,
+                        '🗺',
+                        'NOMBRE_LUGAR_CAS',
+                        '_id',
+                        false
+                    );
 
                     return Request::sendMessage($data);
                 }
@@ -109,61 +132,5 @@ class AtraccionesCommand extends UserCommand
         ];
 
         return Request::sendMessage($data);
-    }
-
-    private function search($keyword, $emotionPrefix, $fallbackMessage, $chatId, $withTerm = false)
-    {
-        $keyword = CommandsHelper::singularize($keyword);
-
-        if ($withTerm) {
-            $resWelive = CommandsHelper::sendToWeLive(self::WELIVE_SEARCH_METHOD, $keyword);
-        } else {
-            $resWelive = CommandsHelper::sendToWeLive(self::WELIVE_LIST_METHOD);
-        }
-
-        if ($resWelive['count'] == 0) {
-            $data = [
-                'chat_id' => $chatId,
-                'text' => $fallbackMessage,
-            ];
-
-            return $data;
-        }
-
-        $answerMessage =
-            $emotionPrefix .
-            PhraseRandomizer::getRandomPhrase(Constants::PHRASE_RESULTS_FOUND) .
-            PHP_EOL;
-
-        if ($withTerm) {
-            $answerMessage =
-                $emotionPrefix .
-                PhraseRandomizer::getRandomPhrase(Constants::PHRASE_RESULTS_SPECIFIC_CONNECTOR) .
-                $keyword .
-                PhraseRandomizer::getRandomPhrase(Constants::PHRASE_RESULTS_SPECIFIC_FOUND) .
-                PHP_EOL;
-        }
-
-        $answerButtons = [];
-
-        foreach ($resWelive['rows'] as $row) {
-            if ($row['NOMBRE_LUGAR_CAS'] != '') {
-                $answerButtons[] = [new InlineKeyboardButton([
-                    'text' => '🗺 ' . $row['NOMBRE_LUGAR_CAS'],
-                    'callback_data' => CommandsHelper::encodeData($row['_id'], self::DATA_PREFIX, self::DATA_LENGTH)
-                ])];
-            }
-        }
-
-        $reflect = new ReflectionClass(InlineKeyboard::class);
-        $keyboard = $reflect->newInstanceArgs($answerButtons);
-
-        $data = [
-            'chat_id' => $chatId,
-            'text' => $answerMessage,
-            'reply_markup' => $keyboard,
-        ];
-
-        return $data;
     }
 }

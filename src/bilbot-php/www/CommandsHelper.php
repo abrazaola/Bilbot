@@ -3,6 +3,10 @@
 namespace Bilbot;
 
 
+use Longman\TelegramBot\Entities\InlineKeyboard;
+use Longman\TelegramBot\Entities\InlineKeyboardButton;
+use ReflectionClass;
+
 class CommandsHelper
 {
     public static function sendToWatson($incomingMessage) {
@@ -72,5 +76,79 @@ class CommandsHelper
         }
 
         return $pluralWord;
+    }
+
+    public static function search(
+        $keyword,
+        $emotionPrefix,
+        $fallbackMessage,
+        $chatId,
+        $searchMethod,
+        $listMethod,
+        $dataPrefix,
+        $dataLength,
+        $emoji,
+        $titleKey,
+        $dataKey,
+        $withTerm = false,
+        $titleDescriptionKey = null
+    ) {
+        $keyword = CommandsHelper::singularize($keyword);
+
+        if ($withTerm) {
+            $resWelive = CommandsHelper::sendToWeLive($searchMethod, $keyword);
+        } else {
+            $resWelive = CommandsHelper::sendToWeLive($listMethod);
+        }
+
+        if ($resWelive['count'] == 0) {
+            $data = [
+                'chat_id' => $chatId,
+                'text' => $fallbackMessage,
+            ];
+
+            return $data;
+        }
+
+        $answerMessage =
+            $emotionPrefix .
+            PhraseRandomizer::getRandomPhrase(Constants::PHRASE_RESULTS_FOUND) .
+            PHP_EOL;
+
+        if ($withTerm) {
+            $answerMessage =
+                $emotionPrefix .
+                PhraseRandomizer::getRandomPhrase(Constants::PHRASE_RESULTS_SPECIFIC_CONNECTOR) .
+                $keyword .
+                PhraseRandomizer::getRandomPhrase(Constants::PHRASE_RESULTS_SPECIFIC_FOUND) .
+                PHP_EOL;
+        }
+
+        $answerButtons = [];
+
+        foreach ($resWelive['rows'] as $row) {
+            if ($titleDescriptionKey == null) {
+                $answerButtons[] = [new InlineKeyboardButton([
+                    'text' => $emoji . ' ' . $row[$titleKey],
+                    'callback_data' => CommandsHelper::encodeData($row[$dataKey], $dataPrefix, $dataLength)
+                ])];
+            } else {
+                $answerButtons[] = [new InlineKeyboardButton([
+                    'text' => $emoji . ' ' . $row[$titleKey] . ' (' . $row[$titleDescriptionKey] . ')',
+                    'callback_data' => CommandsHelper::encodeData($row[$dataKey], $dataPrefix, $dataLength)
+                ])];
+            }
+        }
+
+        $reflect = new ReflectionClass(InlineKeyboard::class);
+        $keyboard = $reflect->newInstanceArgs($answerButtons);
+
+        $data = [
+            'chat_id' => $chatId,
+            'text' => $answerMessage,
+            'reply_markup' => $keyboard,
+        ];
+
+        return $data;
     }
 }
