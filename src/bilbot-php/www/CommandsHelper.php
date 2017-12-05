@@ -63,15 +63,11 @@ class CommandsHelper
     }
 
     public static function singularize($pluralWord) {
-        var_dump($pluralWord);
-
         if (substr($pluralWord, -2) == 'es') {
-            var_dump(rtrim($pluralWord, 'es'));
             return rtrim($pluralWord, 'es');
         }
 
         if (substr($pluralWord, -1) == 's') {
-            var_dump(rtrim($pluralWord, 's'));
             return rtrim($pluralWord, 's');
         }
 
