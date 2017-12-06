@@ -10,7 +10,7 @@ use ReflectionClass;
 class CommandsHelper
 {
     public static function sendToWatson($incomingMessage) {
-        $clientWatson = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WATSON_API_ENDPOINT]);
+        $clientWatson = new \GuzzleHttp\Client(['base_uri' => Constants::BILBOT_WATSON_API_ENDPOINT]);
         $resWatson = $clientWatson->get(
             'understandme',
             ['query' => ['text' => $incomingMessage]]
@@ -22,7 +22,7 @@ class CommandsHelper
     }
 
     public static function sendToWeLive($method, $keyword = false) {
-        $clientWelive = new \GuzzleHttp\Client(['base_uri' => \Bilbot\Constants::BILBOT_WELIVE_API_ENDPOINT]);
+        $clientWelive = new \GuzzleHttp\Client(['base_uri' => Constants::BILBOT_WELIVE_API_ENDPOINT]);
 
         if ($keyword == false) {
             $resWelive = $clientWelive->get(

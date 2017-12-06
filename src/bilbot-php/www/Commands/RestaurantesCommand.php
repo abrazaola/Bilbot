@@ -48,7 +48,7 @@ class RestaurantesCommand extends UserCommand
 
         $specificKeywords = [
             'restaurante', 'restaurantes',
-            'sidrería', 'sidrerías', 'sidreria', 'sidrer¡as',
+            'sidrería', 'sidrerías', 'sidreria', 'sidrerias',
             'asador', 'asadores',
             'sidra', 'vino',
         ];

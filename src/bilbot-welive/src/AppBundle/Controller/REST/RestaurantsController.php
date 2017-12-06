@@ -55,7 +55,7 @@ class RestaurantsController extends FOSRestController
             ->query(
                 self::DATASET,
                 self::RESOURCE,
-                "select _id, documentName, municipality, michelinStar 
+                "select _id, documentName, municipality, restorationType, michelinStar 
                   from rootTable 
                   where 
                   municipality = 'BILBAO' AND 
