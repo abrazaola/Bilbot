@@ -7,6 +7,8 @@ use Bilbot\Constants;
 use Bilbot\PhraseRandomizer;
 use Exception;
 use Longman\TelegramBot\Commands\UserCommand;
+use Longman\TelegramBot\Entities\Keyboard;
+use Longman\TelegramBot\Entities\KeyboardButton;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\TelegramLog;
 
@@ -61,6 +63,12 @@ class BicisCommand extends UserCommand
             'bolueta',
         ];
 
+        $locationKeywords = [
+            'cerca', 'cercano',
+            'próximo', 'próximo',
+            'aqui', 'aquí'
+        ];
+
         if ($incomingMessage === '') {
             $answerMessage = 'Uso del comando: ' . $this->getUsage();
 
@@ -74,6 +82,34 @@ class BicisCommand extends UserCommand
 
         try {
             Request::sendChatAction(['chat_id' => $chat_id, 'action' => 'typing']);
+
+            foreach ($locationKeywords as $keyword) {
+                if (in_array($keyword, $incomingMessageWords)) {
+                    Request::sendChatAction(['chat_id' => $chat_id, 'action' => 'typing']);
+                    $answerMessage = PhraseRandomizer::getRandomPhrase(Constants::PHRASE_REQUEST_LOCATION);
+                    $keyboard = new Keyboard(
+                        [
+                        new KeyboardButton([
+                            'text' => 'Enviar mi posición',
+                            'request_location' => true
+                        ])], [
+                        new KeyboardButton([
+                            'text' => 'Cancelar'
+                        ])
+                    ]);
+                    $keyboard->setOneTimeKeyboard(true);
+                    $keyboard->setSelective(true);
+
+                    $data = [
+                        'chat_id' => $chat_id,
+                        'text' => $answerMessage,
+                        'reply_markup' => $keyboard,
+                    ];
+
+                    return Request::sendMessage($data);
+                }
+            }
+
             $resWatson = CommandsHelper::sendToWatson($incomingMessage);
             $emotionPrefix = CommandsHelper::getEmotionPrefix($resWatson);
 

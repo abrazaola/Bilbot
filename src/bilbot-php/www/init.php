@@ -13,6 +13,7 @@ require_once('Commands/AtraccionesCommand.php');
 require_once('Commands/TurismoCommand.php');
 
 require_once('Commands/CallbackqueryCommand.php');
+require_once('Commands/GenericmessageCommand.php');
 require_once('Constants.php');
 require_once('GetUpdatesDaemon.php');
 require_once('PhraseRandomizer.php');

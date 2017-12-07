@@ -21,14 +21,26 @@ class CommandsHelper
         return $resWatson;
     }
 
-    public static function sendToWeLive($method, $keyword = false) {
+    public static function sendToWeLive($method, $keyword = false, $location = false ) {
         $clientWelive = new \GuzzleHttp\Client(['base_uri' => Constants::BILBOT_WELIVE_API_ENDPOINT]);
 
-        if ($keyword == false) {
+        if ($location != false) {
             $resWelive = $clientWelive->get(
-                $method
+                $method,
+                [
+                    'query' => [
+                        'coordX' => $location['coordX'],
+                        'coordY' => $location['coordY'],
+                    ]
+                ]
             )->getBody()->getContents();
-        } else {
+
+            $resWelive = json_decode($resWelive, true);
+
+            return $resWelive;
+        }
+
+        if ($keyword != false) {
             $resWelive = $clientWelive->get(
                 $method,
                 [
@@ -37,7 +49,15 @@ class CommandsHelper
                     ]
                 ]
             )->getBody()->getContents();
+
+            $resWelive = json_decode($resWelive, true);
+
+            return $resWelive;
         }
+
+        $resWelive = $clientWelive->get(
+            $method
+        )->getBody()->getContents();
 
         $resWelive = json_decode($resWelive, true);
 

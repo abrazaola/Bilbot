@@ -37,6 +37,6 @@ class WeLiveApiConsumer
                 'body' => $query
             ]);
 
-        return json_decode($res->getBody());
+        return json_decode($res->getBody()->getContents(), true);
     }
 }

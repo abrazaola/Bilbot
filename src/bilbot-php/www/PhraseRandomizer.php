@@ -67,6 +67,19 @@ class PhraseRandomizer
             ],
             Constants::PHRASE_RESULTS_SPECIFIC_CONNECTOR => [
                 'con respecto a ',
+            ],
+            Constants::PHRASE_REQUEST_LOCATION => [
+                'Envíame tu posición',
+                'Si me mandas tu posición puedo ayudarte a buscar alguno cercano',
+            ],
+            Constants::PHRASE_NOT_FOUND_WITH_LOCATION => [
+                'No he encontrado puntos en medio kilómetro a la redonda...',
+                'No tienes puntos de recogida cerca',
+                'Parece que no estás cerca de ningún punto de recogida',
+            ],
+            Constants::PHRASE_FOUND_WITH_LOCATION => [
+                'Mira los puntos que he encontrado en menos de 500 metros ',
+                'Tienes los siguientes puntos cerca ',
             ]
         ];
 

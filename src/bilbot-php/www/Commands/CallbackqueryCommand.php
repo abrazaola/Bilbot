@@ -29,7 +29,7 @@ class CallbackqueryCommand extends SystemCommand
             ],
             'bikes' => [
                 'action' => 'bikes_detail',
-                'column' => 'NOMBRE'
+                'column' => '_id'
             ],
             'clubs' => [
                 'action' => 'clubs_detail',
@@ -88,30 +88,45 @@ class CallbackqueryCommand extends SystemCommand
 
         $eventInfoAnswer = $this->buildAnswer($entityKey[0], $resWelive);
 
-        if ($eventInfoAnswer['url'] == '') {
-            return Request::sendMessage([
-                'chat_id' => $callback_query->getMessage()->getChat()->getId(),
-                'text' => $eventInfoAnswer['text'],
-                'parse_mode' => 'html'
-            ]);
-        } else {
+        if ($eventInfoAnswer['url'] != '') {
             return Request::sendMessage([
                 'chat_id' => $callback_query->getMessage()->getChat()->getId(),
                 'text' => $eventInfoAnswer['text'],
                 'reply_markup' => new InlineKeyboard(
-                        [
-                            new InlineKeyboardButton(
-                                ['text' => 'Más información', 'url' => $eventInfoAnswer['url']]
-                            )
-                        ]
+                    [
+                        new InlineKeyboardButton(
+                            ['text' => 'Más información', 'url' => $eventInfoAnswer['url']]
+                        )
+                    ]
                 )
             ]);
         }
+
+        if ($eventInfoAnswer['location'] != null) {
+            Request::sendMessage([
+                'chat_id' => $callback_query->getMessage()->getChat()->getId(),
+                'text' => $eventInfoAnswer['text']
+            ]);
+
+            return Request::sendLocation([
+                'chat_id' => $callback_query->getMessage()->getChat()->getId(),
+                'text' => $eventInfoAnswer['text'],
+                'longitude' => $eventInfoAnswer['location']['coordX'],
+                'latitude' => $eventInfoAnswer['location']['coordY']
+            ]);
+        }
+
+        return Request::sendMessage([
+            'chat_id' => $callback_query->getMessage()->getChat()->getId(),
+            'text' => $eventInfoAnswer['text'],
+            'parse_mode' => 'html'
+        ]);
     }
 
     private function buildAnswer($entityType, $data) {
         $answer = '';
         $url = '';
+        $location = null;
 
         switch ($entityType) {
             case 'agenda':
@@ -132,8 +147,12 @@ class CallbackqueryCommand extends SystemCommand
                 $answer =
                     '🚲 Punto de recogida ' . $data['rows'][0]['NOMBRE'] . PHP_EOL .
                     'Libres de tipo A: ' . $data['rows'][0]['ALIBRES'] . PHP_EOL .
-                    'Libres de tipo B: ' . $data['rows'][0]['BLIBRES'] . PHP_EOL .
-                    '📍 Mapa => https://www.google.com/maps/?q='.$data['rows'][0]['LATITUD'].','.$data['rows'][0]['LONGITUD'] . PHP_EOL;
+                    'Libres de tipo B: ' . $data['rows'][0]['BLIBRES'] . PHP_EOL;
+
+                $location = [
+                    'coordX' => $data['rows'][0]['LONGITUD'],
+                    'coordY' => $data['rows'][0]['LATITUD']
+                ];
                 break;
             case 'clubs':
                 $answer =
@@ -213,7 +232,10 @@ class CallbackqueryCommand extends SystemCommand
             case 'attractions':
                 $answer =
                     '🗺 ' . $data['rows'][0]['NOMBRE_LUGAR_CAS'] . ' (' . $data['rows'][0]['NOMBRE_FAMILIA'] . ') ' . PHP_EOL .
-                    '📍 Mapa => https://www.google.com/maps/?q='.$data['rows'][0]['COORDENADA_UTM_X'].','.$data['rows'][0]['COORDENADA_UTM_Y'] . PHP_EOL;
+                    $location = [
+                        'coordX' => $data['rows'][0]['COORDENADA_UTM_X'],
+                        'coordY' => $data['rows'][0]['COORDENADA_UTM_Y'],
+                    ];
 
                     if ($data['rows'][0]['NOMBRE_CALLE'] != '') {
                         $answer .= 'Dirección: ' . $data['rows'][0]['NOMBRE_TIPO_VIA'] . ' ' . $data['rows'][0]['NOMBRE_CALLE'] . ' ' . $data['rows'][0]['NUMERO'] . ' ' . $data['rows'][0]['BLOQUE'] . PHP_EOL;
@@ -245,7 +267,8 @@ class CallbackqueryCommand extends SystemCommand
 
         return [
             'text' => $answer . PHP_EOL . PhraseRandomizer::getRandomPhrase(Constants::PHRASE_GREETING),
-            'url' => $url
+            'url' => $url,
+            'location' => $location
         ];
     }
 

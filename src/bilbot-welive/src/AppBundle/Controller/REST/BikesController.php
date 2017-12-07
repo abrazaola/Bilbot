@@ -69,7 +69,7 @@ class BikesController extends FOSRestController
             );
 
         foreach ($res['rows'] as $row) {
-            $meters = $calculator->getMetersBetweenPoints($coordX, $coordY, $row['LATITUD'], $row['LONGITUD']);
+            $meters = $calculator->getMetersBetweenPoints($coordY, $coordX, $row['LATITUD'], $row['LONGITUD']);
 
             if ($meters < self::NEAR_METERS) {
                 $nearPoints[] = $row;
@@ -96,7 +96,7 @@ class BikesController extends FOSRestController
     }
 
     public function detailAction(Request $request) {
-        $bikePointName = $request->query->get('NOMBRE');
+        $bikePointId = $request->query->get('_id');
 
         $res = $this
             ->get('welive_api_consumer')
@@ -106,7 +106,7 @@ class BikesController extends FOSRestController
                 "select _id, ALIBRES, BLIBRES, NOMBRE, LATITUD, LONGITUD 
                   from results 
                   where 
-                  NOMBRE LIKE '".$bikePointName."%';"
+                  _id = ".$bikePointId.";"
             );
 
         return new JsonResponse($res, 200);
