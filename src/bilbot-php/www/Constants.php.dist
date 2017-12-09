@@ -17,7 +17,7 @@ class Constants
     const TELEGRAM_DEBUG_LOGS_PATH = '/logs/bilbot_debug.log';
     const TELEGRAM_UPDATE_LOGS_PATH = '/logs/bilbot_updates.log';
 
-    const MYSQL_HOST = 'bilbotpfm_bilbot-mysql_1';
+    const MYSQL_HOST = 'bilbot_bilbot-mysql_1';
     const MYSQL_USER = '';
     const MYSQL_PASSWORD = '';
     const MYSQL_DATABASE = 'bilbot';
@@ -32,6 +32,12 @@ class Constants
     const PHRASE_RESULTS_SPECIFIC_CONNECTOR = 'result_specific_connector';
     const PHRASE_ERROR = 'error';
     const PHRASE_GREETING = 'greeting';
+    const PHRASE_REQUEST_LOCATION = 'request_location';
+    const PHRASE_NOT_FOUND_WITH_LOCATION = 'not_found_with_location';
+    const PHRASE_FOUND_WITH_LOCATION = 'found_with_location';
+    const PHRASE_GREETINGS_COMMAND = 'greetings_command';
+
+    const ADMIN_ID = '';
 
     const RELEVANCE_THRESHOLD = 0.85;
     const NEGATIVENESS_THRESHOLD = -1;

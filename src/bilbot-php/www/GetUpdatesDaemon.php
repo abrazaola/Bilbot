@@ -33,7 +33,7 @@ class GetUpdatesDaemon
                 Constants::TELEGRAM_API_USERNAME
             );
             $this->telegram->addCommandsPaths([Constants::TELEGRAM_COMMANDS_PATH]);
-            $this->telegram->enableAdmins([]);
+            $this->telegram->enableAdmins([Constants::ADMIN_ID]);
 
             try {
                 $this->telegram->enableMySql([

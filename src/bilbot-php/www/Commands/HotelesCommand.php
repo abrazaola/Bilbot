@@ -46,6 +46,8 @@ class HotelesCommand extends UserCommand
             'pension', 'pensión', 'pensiones',
             'hostal', 'hostales',
             'dormir',
+            'barato',
+            'bueno',
             'noche',
         ];
 
