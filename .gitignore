@@ -113,3 +113,5 @@ composer.phar
 /src/bilbot-welive/web/bundles/
 /src/bilbot-welive/app/config/parameters.yml
 /src/bilbot-php/www/Constants.php
+
+release.tar.gz
