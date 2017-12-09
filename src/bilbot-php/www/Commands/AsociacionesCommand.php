@@ -42,8 +42,10 @@ class AsociacionesCommand extends UserCommand
         $answerMessage = $fallbackMessage;
 
         $genericKeywords = [
-            'asociaciones','asociacion',
+            'asociaciones', 'asociacion',
             'club', 'clubs',
+            'hacer',
+            'entretenimiento',
         ];
 
         $specificKeywords = [

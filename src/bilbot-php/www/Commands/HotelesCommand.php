@@ -42,10 +42,11 @@ class HotelesCommand extends UserCommand
         $answerMessage = $fallbackMessage;
 
         $genericKeywords = [
-            'hotel','hoteles',
+            'hotel', 'hoteles',
             'pension', 'pensión', 'pensiones',
             'hostal', 'hostales',
             'dormir',
+            'noche',
         ];
 
         $specificKeywords = [

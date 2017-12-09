@@ -38,11 +38,7 @@ class ClubsController extends FOSRestController
                 'select _id, Nombre from results limit 10;'
             );
 
-        $data = [
-            'results'    => $res,
-        ];
-
-        return new JsonResponse($data, 200);
+        return new JsonResponse($res, 200);
     }
 
     public function searchAction(Request $request) {

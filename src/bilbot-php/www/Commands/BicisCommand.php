@@ -46,11 +46,10 @@ class BicisCommand extends UserCommand
         $genericKeywords = [
             'bici','bicis',
             'bicicleta', 'bicicletas',
-            'recoger', 'recojemos', 'recojo', 'recogida',
+            'recoger', 'recogemos', 'recojo', 'recogida',
             'encontrar',
             'punto', 'puntos',
             'alquilar',
-            'cerca'
         ];
 
         $specificKeywords = [
@@ -65,7 +64,7 @@ class BicisCommand extends UserCommand
 
         $locationKeywords = [
             'cerca', 'cercano',
-            'próximo', 'próximo',
+            'próximo', 'proximo',
             'aqui', 'aquí'
         ];
 

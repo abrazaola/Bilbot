@@ -31,9 +31,9 @@ class PhraseRandomizer
             Constants::PHRASE_EMOTION_NEGATIVE => [
                 '😔 sé que a veces tardo un poco ',
                 'Intento ser lo más servicial que puedo 😞  ',
-                'Sé que todavía me queda bastante que mejorar 😕 ',
-                'Siento no ser lo útil que esperabas 😓 ',
-                'A veces me cuesta un poco 😣 ',
+                'Todavía me queda bastante que mejorar 😕 ',
+                'Voy lo más rápido que puedo 😓 ',
+                'A veces es complicado 😣 ',
             ],
             Constants::PHRASE_RESULTS_FOUND => [
                 ', aquí tienes una selección de resultados',
@@ -64,9 +64,11 @@ class PhraseRandomizer
             ],
             Constants::PHRASE_EMOTION_NEUTRAL => [
                 'Mira ',
+                'Aqui tienes ',
             ],
             Constants::PHRASE_RESULTS_SPECIFIC_CONNECTOR => [
                 'con respecto a ',
+                'sobre ',
             ],
             Constants::PHRASE_REQUEST_LOCATION => [
                 'Envíame tu posición',
@@ -80,6 +82,12 @@ class PhraseRandomizer
             Constants::PHRASE_FOUND_WITH_LOCATION => [
                 'Mira los puntos que he encontrado en menos de 500 metros ',
                 'Tienes los siguientes puntos cerca ',
+                'Tienes estos puntos cercanos  ',
+            ],
+            Constants::PHRASE_GREETINGS_COMMAND => [
+                '👋 ¡Hola! Soy Bilbot, sé un montón de cosas sobre Bilbao, mira mis comandos y pregunta lo que quieras',
+                '¡Buenas! Me llamo Bilbot, y te puedo ayudar a moverte por Bilbao, echa un ojo a mis comandos y pregúntame lo que quieras',
+                'Hola, soy Bilbot, se muchas cosas de Bilbao y estoy aquí para echarte una mano, pregúntame lo que quieras usando mis comandos',
             ]
         ];
 

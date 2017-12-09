@@ -47,6 +47,10 @@ class TurismoCommand extends UserCommand
             'oficina', 'oficinas',
             'información', 'informacion',
             'conocer',
+            'lugar',
+            'tradición', 'tradicion', 'tradicional',
+            'naturaleza',
+            'paisaje',
         ];
 
         $specificKeywords = [

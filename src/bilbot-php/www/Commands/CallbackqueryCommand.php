@@ -2,6 +2,7 @@
 
 namespace Longman\TelegramBot\Commands\SystemCommands;
 
+use Bilbot\CommandsHelper;
 use Bilbot\Constants;
 use Bilbot\PhraseRandomizer;
 use Longman\TelegramBot\Commands\SystemCommand;
@@ -88,6 +89,14 @@ class CallbackqueryCommand extends SystemCommand
 
         $eventInfoAnswer = $this->buildAnswer($entityKey[0], $resWelive);
 
+        if ($eventInfoAnswer['location'] != null) {
+            Request::sendLocation([
+                'chat_id' => $callback_query->getMessage()->getChat()->getId(),
+                'longitude' => $eventInfoAnswer['location']['coordX'],
+                'latitude' => $eventInfoAnswer['location']['coordY']
+            ]);
+        }
+
         if ($eventInfoAnswer['url'] != '') {
             return Request::sendMessage([
                 'chat_id' => $callback_query->getMessage()->getChat()->getId(),
@@ -99,20 +108,6 @@ class CallbackqueryCommand extends SystemCommand
                         )
                     ]
                 )
-            ]);
-        }
-
-        if ($eventInfoAnswer['location'] != null) {
-            Request::sendMessage([
-                'chat_id' => $callback_query->getMessage()->getChat()->getId(),
-                'text' => $eventInfoAnswer['text']
-            ]);
-
-            return Request::sendLocation([
-                'chat_id' => $callback_query->getMessage()->getChat()->getId(),
-                'text' => $eventInfoAnswer['text'],
-                'longitude' => $eventInfoAnswer['location']['coordX'],
-                'latitude' => $eventInfoAnswer['location']['coordY']
             ]);
         }
 
@@ -231,15 +226,14 @@ class CallbackqueryCommand extends SystemCommand
                 break;
             case 'attractions':
                 $answer =
-                    '🗺 ' . $data['rows'][0]['NOMBRE_LUGAR_CAS'] . ' (' . $data['rows'][0]['NOMBRE_FAMILIA'] . ') ' . PHP_EOL .
-                    $location = [
-                        'coordX' => $data['rows'][0]['COORDENADA_UTM_X'],
-                        'coordY' => $data['rows'][0]['COORDENADA_UTM_Y'],
-                    ];
+                    '🗺 ' . $data['rows'][0]['NOMBRE_LUGAR_CAS'] . ' (' . $data['rows'][0]['NOMBRE_FAMILIA'] . ') ' . PHP_EOL;
 
                     if ($data['rows'][0]['NOMBRE_CALLE'] != '') {
                         $answer .= 'Dirección: ' . $data['rows'][0]['NOMBRE_TIPO_VIA'] . ' ' . $data['rows'][0]['NOMBRE_CALLE'] . ' ' . $data['rows'][0]['NUMERO'] . ' ' . $data['rows'][0]['BLOQUE'] . PHP_EOL;
                     }
+
+                $location = CommandsHelper::ToLL($data['rows'][0]['COORDENADA_UTM_Y'], $data['rows'][0]['COORDENADA_UTM_X'], '30T');
+
                 break;
             case 'tourist':
                 $answer =
@@ -260,8 +254,13 @@ class CallbackqueryCommand extends SystemCommand
                     if ($data['rows'][0]['friendlyUrl'] != '') {
                         $url = $data['rows'][0]['friendlyUrl'];
                     }
+                $coord = explode(',', $data['rows'][0]['latitudelongitude']);
 
-                $answer .= '📍 Mapa => https://www.google.com/maps/?q='.$data['rows'][0]['latitudelongitude'] . PHP_EOL;
+                $location = [
+                    'coordX' => $coord[1],
+                    'coordY' => $coord[0]
+                ];
+
                 break;
         }
 

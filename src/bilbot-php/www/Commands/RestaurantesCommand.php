@@ -42,8 +42,8 @@ class RestaurantesCommand extends UserCommand
         $answerMessage = $fallbackMessage;
 
         $genericKeywords = [
-            'comer','comida', 'comidas',
-            'cenar','cena', 'cenas',
+            'comer', 'comida', 'comidas',
+            'cenar', 'cena', 'cenas',
         ];
 
         $specificKeywords = [
@@ -51,6 +51,9 @@ class RestaurantesCommand extends UserCommand
             'sidrería', 'sidrerías', 'sidreria', 'sidrerias',
             'asador', 'asadores',
             'sidra', 'vino',
+            'cervecera', 'cervecería', 'cerveceria',
+            'cerveza',
+            'chuletón', 'chuleton'
         ];
 
         if ($incomingMessage === '') {

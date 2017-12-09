@@ -49,12 +49,16 @@ class GenericmessageCommand extends SystemCommand
         }
 
         if ($this->getMessage()->getLocation() != null) {
+            $chatId = $this->getMessage()->getChat()->getId();
+
+            Request::sendChatAction(['chat_id' => $chatId, 'action' => 'typing']);
+
             $location = [
                 'coordY' => $this->getMessage()->getLocation()->getLatitude(),
                 'coordX' => $this->getMessage()->getLocation()->getLongitude()
             ];
 
-            $data = $this->searchBikesWithLocation($this->getMessage()->getChat()->getId(), $location);
+            $data = $this->searchBikesWithLocation($chatId, $location);
 
             return Request::sendMessage($data);
         }
