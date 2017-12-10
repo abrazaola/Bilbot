@@ -58,6 +58,7 @@ Open Telegram and search the bot `@bilb0_bot` to start a conversation.
 
 You can ask to the bot information using the following commands:
 
+* `/saludo` for a greeting message.
 * `/agenda` for information about events.
 * `/bicis` for information about bike rental service.
 * `/asociaciones` for information about clubs.
@@ -89,7 +90,7 @@ The web server is constantly querying the Telegram API for new messages sent to 
 docker-compose down
 ```
 
-To remove the built image for starting from scratch:
+To remove the built image and starting from scratch:
 ```
 docker-compose down
 docker-compose rm
@@ -107,13 +108,17 @@ All the received messages are stored in a MySQL Database which can be accessed i
 
 ## Deployment
 
-The deployment process is orchestrated by Capistrano, a tool written in ruby to encapsulate each environment 
-configuration specifications.
+The deployment process is based on a Bash script, which compress the source folders in a tar and upload them to a VPS.
 
-For deploying a new version in dev:
+For deploying a new version in your VPS, just add your SSH keys to your keychain, change the VPS address in `deploy.sh` and execute:
 
 ```
-cap dev deploy
+./deploy.sh
+```
+
+If you want to stop the bot instance in your VPS, change the VPS address of the file `stop_vps.sh` and execute it with
+```
+./stop_vps.sh
 ```
 
 ### How to add a new command
@@ -123,7 +128,7 @@ cap dev deploy
 1. Add the routing for the actions inside of `src/bilbot-welive/src/AppBundle/Resources/config/routing_api.yml` following the naming convention `{dataType}_{action_name}`
 1. Create a new command file in `src/bilbot-php/www/Commands` with the name `{CommandNameCommand.php}` is highly recommended to duplicate an existing one and changing the name of the class within
 1. Change the class properties `$name`, `$description`, `$usage` and the constants `WELIVE_SEARCH_METHOD`, `WELIVE_LIST_METHOD` and `DATA_PREFIX`, please note that these are the route slugs created in step 2. `DATA_PREFIX` is recommended to be one word with a trailing underscore (_) should be descriptive of the type of data, this will be used by the `CallbackqueryCommand.php` for handling the origin of the callbacks.
-1. Customize the button text representation within `search` function and the data column to be represented as title.
+1. Customize the button text representation in `search` function call parameters and the data column to be represented as title.
 1. Add the data prefix without the trailing underscore to the `$entities` associative array in `CallbackqueryCommand.php` with the subkeys `action` to represent the detail route slug created in step 2 and `column` for the column that will be used as primary key for the search, it must be consistent with the argument that will receive the detail action in the controller.
 1. Add a new switch clause in the function `buildAnswer` using the data prefix without trailing underscore with the text that will be rendered as answer to the user.
 1. Add the new file command path to  `src/bilbot-php/www/init.php`
