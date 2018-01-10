@@ -14,7 +14,6 @@ These instructions will get you a copy of the project up and running on your loc
 
 * [Docker](https://www.docker.com/)
 * [Docker compose](https://docs.docker.com/compose/)
-* [Capistrano](http://capistranorb.com/)
 
 ### How to run
 
